@@ -1,0 +1,6 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json"
+}
+
+//npm install @types/node --save-dev 專案根目錄下需安裝
