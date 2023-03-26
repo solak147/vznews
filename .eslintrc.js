@@ -9,7 +9,14 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['prettier'],
-  rules: { 'prettier/prettier': 'error' },
+  rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto' // windows 換行用
+      }
+    ]
+  },
   overrides: [
     {
       files: [
