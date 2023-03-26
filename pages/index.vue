@@ -1,8 +1,8 @@
 <template>
   <section>
     <van-row align="center">
-      <van-col span="4"> <van-icon name="fire-o" color="#ff0000" size="5rem" /></van-col>
-      <van-col span="12"> <h1>免費接 - Buddha soho</h1></van-col>
+      <van-col span="4"> <van-icon name="fire" color="#ff0000" size="5rem" /></van-col>
+      <van-col span="20"> <h1>免費接 - Buddha soho</h1></van-col>
     </van-row>
 
     <Swiper
@@ -25,9 +25,121 @@
       }"
     >
       <SwiperSlide v-for="slide in bannerArr" :key="slide">
-        <van-image height="400px" width="100vw" :src="slide" />
+        <van-image height="300px" width="100vw" :src="slide" />
       </SwiperSlide>
     </Swiper>
+
+    <van-row justify="center">
+      <van-col class="stepTitle" span="24"> <h1>簡單三步驟</h1></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon-r" name="records" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="20">
+        <h3>步驟 1</h3>
+        <p>註冊會員，填寫基本資料</p></van-col
+      >
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon-r" name="search" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="20">
+        <h3>步驟 2</h3>
+        <p>搜尋你想要接的案子</p></van-col
+      >
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon-r" name="phone" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="20">
+        <h3>步驟 3</h3>
+        <p>聯絡賣家，開啟你的接案工作</p></van-col
+      >
+    </van-row>
+
+    <van-row justify="center">
+      <van-col class="stepTitle" span="24"> <h1>尋找專業人才 幫您解決外包難題</h1></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="photo-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>平面設計</h3>
+      </van-col>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="newspaper-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8"> <h3>網頁設計</h3></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="desktop-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>程式開發</h3>
+      </van-col>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="edit" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8"> <h3>翻譯寫作</h3></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="shopping-cart-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>商攝娛樂</h3>
+      </van-col>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="video-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8"> <h3>影像製作</h3></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="wap-home-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>空間設計</h3>
+      </van-col>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="flower-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8"> <h3>生活服務</h3></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="cluster-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>活動企劃</h3>
+      </van-col>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="manager-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8"> <h3>專業顧問</h3></van-col>
+    </van-row>
+
+    <van-row>
+      <van-col span="4">
+        <van-icon class="stepIcon" name="setting-o" color="#ff0000" size="4rem"
+      /></van-col>
+      <van-col span="8">
+        <h3>資訊工程</h3>
+      </van-col>
+    </van-row>
   </section>
 </template>
 
@@ -36,7 +148,24 @@ const bannerArr = ['images/banner1.jpg', 'images/banner2.jpg', 'images/banner3.j
 </script>
 
 <style lang="less" scoped>
-.swiper-slide {
-  min-height: 300px;
+.stepTitle {
+  text-align: center;
+}
+
+.van-row {
+  margin: 2.5rem 1rem;
+
+  p {
+    margin: 1rem 0rem;
+  }
+}
+
+.stepIcon {
+  background-color: #ffc7e7;
+
+  &-r {
+    background-color: #ffc7e7;
+    border-radius: 100px;
+  }
 }
 </style>
