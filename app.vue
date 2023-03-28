@@ -1,5 +1,3 @@
-import CptHeader from './components/cptHeader.vue';
-
 <template>
   <div>
     <NuxtLayout>
