@@ -1,5 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        prependPath: true
+      }
+    }
+  },
+
   modules: ['@vant/nuxt', 'nuxt-swiper'],
 
   // 全域 CSS

@@ -5,10 +5,10 @@
       <van-col span="20"> <h1>會員登入</h1></van-col>
     </van-row>
 
-    <van-form @failed="onFailed">
+    <van-form @submit="login" @failed="onFailed">
       <van-cell-group inset>
         <van-field
-          v-model="account"
+          v-model="loginModel.account"
           name="account"
           placeholder="帳號"
           :rules="[
@@ -17,7 +17,7 @@
         />
 
         <van-field
-          v-model="password"
+          v-model="loginModel.password"
           name="password"
           placeholder="密碼"
           :rules="[
@@ -27,7 +27,7 @@
       </van-cell-group>
 
       <div style="margin: 16px">
-        <van-button round block type="danger" native-type="submit"> 登入 </van-button>
+        <van-button round block type="danger" native-type="submit"> 會員登入 </van-button>
       </div>
 
       <div style="margin: 16px">
@@ -53,10 +53,24 @@ useHead({
   ]
 })
 
-const account = ref('')
-const password = ref('')
+const loginModel = reactive({
+  account: '',
+  password: ''
+})
+
 const accountPtn = /^[a-zA-Z]\w{3,15}$/
 const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
+
+const login = async (values) => {
+  console.log(values)
+  const a = await useFetch('/member/login', {
+    method: 'post',
+    body: loginModel,
+    baseURL: '/api'
+  })
+
+  console.log(a)
+}
 
 const onFailed = (errorInfo) => {
   console.log('failed', errorInfo)
