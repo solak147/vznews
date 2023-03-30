@@ -11,9 +11,7 @@
           v-model="loginModel.account"
           name="account"
           placeholder="帳號"
-          :rules="[
-            { pattern: accountPtn, message: '請輸入英文字母開頭且特殊符號只能有 (_) 的4-16個字元' }
-          ]"
+          :rules="[{ pattern: accountPtn, message: 'e-mail 格式錯誤' }]"
         />
 
         <van-field
@@ -31,7 +29,15 @@
       </div>
 
       <div style="margin: 16px">
-        <van-button round block type="danger" native-type="submit"> 註冊會員 </van-button>
+        <van-button
+          round
+          block
+          type="danger"
+          native-type="button"
+          @click="navigateTo('/member/register')"
+        >
+          註冊會員
+        </van-button>
       </div>
 
       <div style="margin: 16px">
@@ -53,14 +59,14 @@ useHead({
   ]
 })
 
+const accountPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
+
+const token = useCookie('jwt-token')
 const loginModel = reactive({
   account: '',
   password: ''
 })
-
-const accountPtn = /^[a-zA-Z]\w{3,15}$/
-const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
-
 const login = async (values) => {
   console.log(values)
   const a = await useFetch('/member/login', {
@@ -69,6 +75,7 @@ const login = async (values) => {
     baseURL: '/api'
   })
 
+  token.value = 'im token'
   console.log(a)
 }
 
@@ -85,7 +92,7 @@ const back = () => {
 .title {
   background-color: #e1264a;
   color: #fff;
-  margin-bottom: 2.5rem 0rem;
+  margin-bottom: 2.5rem;
   padding: 1rem 1rem;
 }
 

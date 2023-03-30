@@ -9,8 +9,8 @@
     >
       <van-tabbar-item z icon="home-o">首頁</van-tabbar-item>
       <van-tabbar-item icon="edit">發案</van-tabbar-item>
+      <van-tabbar-item icon="search">接案</van-tabbar-item>
       <van-tabbar-item icon="friends-o">會員</van-tabbar-item>
-      <van-tabbar-item icon="setting-o">标签</van-tabbar-item>
     </van-tabbar>
   </header>
 </template>
@@ -26,6 +26,9 @@ const navChg = (index) => {
       navigateTo('/')
       break
     case 2:
+      navigateTo('/casem')
+      break
+    case 3:
       navigateTo('/member/login')
       break
   }
