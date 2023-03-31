@@ -29,6 +29,18 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
+      <van-cell>
+        <template #title>
+          <label>尋找演員</label>
+          <div class="subTitle">
+            <van-icon name="location" color="#00BB00" />台中 <span class="price">$1000</span>
+          </div>
+        </template>
+        <template #label>
+          <van-text-ellipsis rows="4" :content="text" />
+          <div style="float: right"><van-button type="danger">申請報價</van-button></div>
+        </template>
+      </van-cell>
       <van-cell v-for="item in list" :key="item" :title="item" />
     </van-list>
   </section>
@@ -38,6 +50,10 @@
 const value1 = ref(0)
 const value2 = ref('a')
 const value3 = ref('a')
+
+const text =
+  'Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。'
+
 const option1 = [
   { text: '全部案件', value: 0 },
   { text: '新款商品', value: 1 },
@@ -96,5 +112,20 @@ const onLoad = () => {
 .selTag {
   margin: 0.5rem;
   font-size: 1.2rem;
+}
+
+label {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.subTitle {
+  display: inline;
+  margin: 1rem;
+}
+
+.price {
+  color: red;
+  margin: 1rem;
 }
 </style>

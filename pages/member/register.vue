@@ -11,7 +11,7 @@
       <van-step>3.填寫基本資料</van-step>
     </van-steps>
 
-    <component :is="stepComponents[step]" />
+    <component :is="stepComponents[step]" :step-click="stepClick" />
 
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
 
@@ -26,12 +26,21 @@
 <script setup>
 import regStep1 from './components/registerStep1.vue'
 import regStep2 from './components/registerStep2.vue'
+import regStep3 from './components/registerStep3.vue'
 
-const step = ref(1)
-const stepComponents = [regStep1, regStep2]
+const step = ref(0)
+const stepComponents = [regStep1, regStep2, regStep3]
+
+const stepClick = () => {
+  step.value += 1
+}
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: underline;
+}
+
 .title {
   background-color: #e1264a;
   color: #fff;

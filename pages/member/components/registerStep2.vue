@@ -12,6 +12,12 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  stepClick: {
+    type: Function
+  }
+})
+
 const password = ref('')
 const errorInfo = ref('')
 const showKeyboard = ref(true)
@@ -19,8 +25,8 @@ const showKeyboard = ref(true)
 watch(password, (newVal) => {
   if (newVal.length === 6 && newVal !== '123456') {
     errorInfo.value = '密码错误'
-  } else {
-    errorInfo.value = ''
+  } else if (newVal.length === 6 && newVal === '123456') {
+    props.stepClick()
   }
 })
 </script>

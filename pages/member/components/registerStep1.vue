@@ -5,13 +5,14 @@
         <van-field
           v-model="email"
           name="email"
-          placeholder="e-mail"
+          label="帳號"
+          placeholder="帳號為您的 e-mail"
           :rules="[{ pattern: emailPtn, message: 'e-mail 格式錯誤' }]"
         />
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" @click="step += 1">下一步</van-button></van-col
+          <van-button round type="danger" @click="props.stepClick">下一步</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -26,6 +27,12 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  stepClick: {
+    type: Function
+  }
+})
+
 const email = ref('')
 const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 </script>
