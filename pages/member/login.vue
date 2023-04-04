@@ -10,14 +10,16 @@
         <van-field
           v-model="loginModel.account"
           name="account"
-          placeholder="帳號"
+          placeholder="帳號為你的 email"
           :rules="[{ pattern: accountPtn, message: 'e-mail 格式錯誤' }]"
         />
 
         <van-field
           v-model="loginModel.password"
+          type="password"
           name="password"
           placeholder="密碼"
+          autocomplete="off"
           :rules="[
             { pattern: pwdPtn, message: '需至少一個大寫字母、一個小寫字母、一個數字 和不包含空白' }
           ]"
@@ -69,14 +71,17 @@ const loginModel = reactive({
 })
 const login = async (values) => {
   console.log(values)
-  const a = await useFetch('/member/login', {
+  const response = await useFetch('/member/login', {
     method: 'post',
     body: loginModel,
     baseURL: '/api'
   })
 
-  token.value = 'im token'
-  console.log(a)
+  if (response.data.value.msg === 'Success') {
+    token.value = response.data.value.data.token
+  } else {
+    alert('登入失敗')
+  }
 }
 
 const onFailed = (errorInfo) => {
