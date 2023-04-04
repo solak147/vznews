@@ -22,10 +22,11 @@ const password = ref('')
 const errorInfo = ref('')
 const showKeyboard = ref(true)
 
+const vaildCode = useState('vaildCode')
 watch(password, (newVal) => {
-  if (newVal.length === 6 && newVal !== '123456') {
-    errorInfo.value = '密码错误'
-  } else if (newVal.length === 6 && newVal === '123456') {
+  if (newVal.length === 6 && newVal !== vaildCode) {
+    errorInfo.value = '驗證碼错误'
+  } else if (newVal.length === 6 && newVal === vaildCode) {
     props.stepClick()
   }
 })

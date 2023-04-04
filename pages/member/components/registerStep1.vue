@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-form @submit="login" @failed="onFailed">
+    <van-form @submit="next" @failed="onFailed">
       <van-cell-group inset>
         <van-field
           v-model="email"
@@ -12,7 +12,7 @@
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" @click="props.stepClick">下一步</van-button></van-col
+          <van-button round type="danger" native-type="submit">下一步</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -35,6 +35,21 @@ const props = defineProps({
 
 const email = ref('')
 const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+const next = async (values) => {
+  const response = await useFetch('/member/registerStep1', {
+    method: 'post',
+    body: values,
+    baseURL: '/api'
+  })
+
+  if (response.data.value.msg === 'Success') {
+    useState('vaildCode', () => response.data.value.data)
+    props.stepClick()
+  } else {
+    alert('帳號已存在')
+  }
+}
 </script>
 
 <style lang="less" scoped>
