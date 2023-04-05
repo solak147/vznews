@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ['@vant/nuxt', 'nuxt-swiper'],
+  modules: ['@vant/nuxt', 'nuxt-swiper', '@pinia/nuxt'],
 
   // 全域 CSS
   css: ['@/assets/style/main.less'],

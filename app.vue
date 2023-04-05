@@ -7,9 +7,7 @@
       <template #header>
         <CptHeader></CptHeader>
       </template>
-      <template #footer>
-        <p>這段會放置在 footer 插槽</p>
-      </template>
+      <template #footer> </template>
     </NuxtLayout>
   </div>
 </template>

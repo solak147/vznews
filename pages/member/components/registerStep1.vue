@@ -27,6 +27,8 @@
 </template>
 
 <script setup>
+import { useRegisterStore } from '@/stores/register'
+
 const props = defineProps({
   stepClick: {
     type: Function
@@ -36,6 +38,7 @@ const props = defineProps({
 const email = ref('')
 const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
+const registerStore = useRegisterStore()
 const next = async (values) => {
   const response = await useFetch('/member/registerStep1', {
     method: 'post',
@@ -44,7 +47,8 @@ const next = async (values) => {
   })
 
   if (response.data.value.msg === 'Success') {
-    useState('vaildCode', () => response.data.value.data)
+    registerStore.account = email.value
+    registerStore.vaildCode = response.data.value.data
     props.stepClick()
   } else {
     alert('帳號已存在')

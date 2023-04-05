@@ -26,12 +26,18 @@
           v-model="fieldValue"
           is-link
           readonly
-          label="城市"
-          placeholder="选择城市"
-          @click="showPicker = true"
+          label="地區"
+          placeholder="請選擇所在地區"
+          @click="show = true"
         />
-        <van-popup v-model:show="showPicker" round position="bottom">
-          <van-picker :columns="columns" @cancel="showPicker = false" @confirm="onConfirm" />
+        <van-popup v-model:show="show" round position="bottom">
+          <van-cascader
+            v-model="cascaderValue"
+            title="請選擇所在地區"
+            :options="options"
+            @close="show = false"
+            @finish="onFinish"
+          />
         </van-popup>
       </van-cell-group>
 
@@ -61,27 +67,33 @@
 const name = ref('')
 const phone = ref('')
 const introduction = ref('')
-const namePtn = /^\S.{0,18}\S?$/
+const namePtn = /^\S.{0,13}\S?$/
 const phonePtn = /^\d{1,15}$/
 
-const columns = [
-  { text: '杭州', value: 'Hangzhou' },
-  { text: '宁波', value: 'Ningbo' },
-  { text: '温州', value: 'Wenzhou' },
-  { text: '绍兴', value: 'Shaoxing' },
-  { text: '湖州', value: 'Huzhou' }
-]
+const appConfig = useAppConfig()
+const { addressCode } = appConfig
+const show = ref(false)
 const fieldValue = ref('')
-const showPicker = ref(false)
-
-const onConfirm = ({ selectedOptions }) => {
-  showPicker.value = false
-  fieldValue.value = selectedOptions[0].text
+const cascaderValue = ref('')
+// 选项列表，children 代表子选项，支持多级嵌套
+const options = addressCode
+// 全部选项选择完毕后，会触发 finish 事件
+const onFinish = ({ selectedOptions }) => {
+  show.value = false
+  fieldValue.value = selectedOptions.map((option) => option.value).join('/')
 }
 </script>
 
 <style lang="less" scope>
 .van-button {
   margin: 1.5rem 0rem;
+}
+
+.van-cascader__option {
+  justify-content: center;
+}
+
+.van-tabs__nav {
+  justify-content: center;
 }
 </style>
