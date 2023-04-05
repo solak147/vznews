@@ -9,6 +9,32 @@
           placeholder="帳號為您的 e-mail"
           :rules="[{ pattern: emailPtn, message: 'e-mail 格式錯誤' }]"
         />
+        <van-field
+          v-model="password"
+          type="password"
+          name="password"
+          label="密碼"
+          placeholder="輸入密碼"
+          autocomplete="off"
+          :rules="[
+            {
+              pattern: pwdPtn,
+              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+            }
+          ]"
+        />
+        <van-field
+          v-model="passwordConfirm"
+          type="password"
+          name="passwordConfirm"
+          label="密碼確認"
+          placeholder="再次輸入密碼"
+          autocomplete="off"
+          :error-message="pwdConfirmErr"
+          :rules="[
+            { pattern: pwdPtn, message: '需至少一個大寫字母、一個小寫字母、一個數字 和不包含空白' }
+          ]"
+        />
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
@@ -36,7 +62,18 @@ const props = defineProps({
 })
 
 const email = ref('')
+const password = ref('')
+const passwordConfirm = ref('')
+const pwdConfirmErr = ref('')
 const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
+watch(passwordConfirm, (newVal) => {
+  if (newVal !== password.value) {
+    pwdConfirmErr.value = '密碼不一致'
+  } else {
+    pwdConfirmErr.value = ''
+  }
+})
 
 const registerStore = useRegisterStore()
 const next = async (values) => {
@@ -48,6 +85,7 @@ const next = async (values) => {
 
   if (response.data.value.msg === 'Success') {
     registerStore.account = email.value
+    registerStore.password = password.value
     registerStore.vaildCode = response.data.value.data
     props.stepClick()
   } else {

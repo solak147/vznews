@@ -21,7 +21,10 @@
           placeholder="密碼"
           autocomplete="off"
           :rules="[
-            { pattern: pwdPtn, message: '需至少一個大寫字母、一個小寫字母、一個數字 和不包含空白' }
+            {
+              pattern: pwdPtn,
+              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+            }
           ]"
         />
       </van-cell-group>

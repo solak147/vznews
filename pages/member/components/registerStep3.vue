@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-form @submit="login" @failed="onFailed">
+    <van-form @submit="next" @failed="onFailed">
       <van-cell-group inset>
         <van-field
           v-model="name"
@@ -23,7 +23,7 @@
 
       <van-cell-group inset>
         <van-field
-          v-model="fieldValue"
+          v-model="addressTxt"
           is-link
           readonly
           label="地區"
@@ -44,6 +44,7 @@
       <van-cell-group inset>
         <van-field
           v-model="introduction"
+          name="introduction"
           rows="4"
           autosize
           label="簡介"
@@ -56,7 +57,7 @@
 
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" @click="step += 1">下一步</van-button></van-col
+          <van-button round type="danger" native-type="submit">下一步</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -64,6 +65,8 @@
 </template>
 
 <script setup>
+import { useRegisterStore } from '@/stores/register'
+
 const name = ref('')
 const phone = ref('')
 const introduction = ref('')
@@ -71,16 +74,35 @@ const namePtn = /^\S.{0,13}\S?$/
 const phonePtn = /^\d{1,15}$/
 
 const appConfig = useAppConfig()
-const { addressCode } = appConfig
+const { addressConfig } = appConfig
 const show = ref(false)
-const fieldValue = ref('')
+const addressTxt = ref('')
 const cascaderValue = ref('')
-// 选项列表，children 代表子选项，支持多级嵌套
-const options = addressCode
+const options = addressConfig // 选项列表，children 代表子选项，支持多级嵌套
 // 全部选项选择完毕后，会触发 finish 事件
 const onFinish = ({ selectedOptions }) => {
   show.value = false
-  fieldValue.value = selectedOptions.map((option) => option.value).join('/')
+  addressTxt.value = selectedOptions.map((option) => option.text).join(' ')
+}
+
+const registerStore = useRegisterStore()
+const next = async (values) => {
+  const response = await useFetch('/member/registerStep3', {
+    method: 'post',
+    body: {
+      ...values,
+      zipcode: cascaderValue,
+      account: registerStore.account,
+      password: registerStore.password
+    },
+    baseURL: '/api'
+  })
+
+  if (response.data.value.msg === 'Success') {
+    alert('註冊成功')
+  } else {
+    alert('註冊失敗')
+  }
 }
 </script>
 

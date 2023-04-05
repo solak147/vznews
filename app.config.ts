@@ -1,5 +1,5 @@
 export default defineAppConfig({
-  addressCode: [
+  addressConfig: [
     {
       text: '臺北市',
       value: '1',

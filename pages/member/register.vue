@@ -28,7 +28,7 @@ import regStep1 from './components/registerStep1.vue'
 import regStep2 from './components/registerStep2.vue'
 import regStep3 from './components/registerStep3.vue'
 
-const step = ref(2)
+const step = ref(0)
 const stepComponents = [regStep1, regStep2, regStep3]
 
 const stepClick = () => {
