@@ -85,6 +85,7 @@ const onFinish = ({ selectedOptions }) => {
   addressTxt.value = selectedOptions.map((option) => option.text).join(' ')
 }
 
+const token = useCookie('jwt-token')
 const registerStore = useRegisterStore()
 const next = async (values) => {
   const response = await useFetch('/member/registerStep3', {
@@ -99,6 +100,7 @@ const next = async (values) => {
   })
 
   if (response.data.value.msg === 'Success') {
+    token.value = response.data.value.data.token
     alert('註冊成功')
   } else {
     alert('註冊失敗')

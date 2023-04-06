@@ -29,19 +29,24 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell>
+      <van-cell v-for="item in list" :key="item" @click="navigateTo('/casem/1')">
         <template #title>
           <label>尋找演員</label>
           <div class="subTitle">
             <van-icon name="location" color="#00BB00" />台中 <span class="price">$1000</span>
           </div>
+          <div style="float: right"><van-icon name="fire" color="#FFDC35" />0-5人報價</div>
         </template>
         <template #label>
           <van-text-ellipsis rows="4" :content="text" />
-          <div style="float: right"><van-button type="danger">申請報價</van-button></div>
+
+          <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
+
+          <div class="listBottom">
+            <span>5分鐘前更新</span><van-button type="danger">申請報價</van-button>
+          </div>
         </template>
       </van-cell>
-      <van-cell v-for="item in list" :key="item" :title="item" />
     </van-list>
   </section>
 </template>
@@ -91,9 +96,17 @@ const onLoad = () => {
     }
   }, 1000)
 }
+
+const back = () => {
+  history.back()
+}
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: underline;
+}
+
 .title {
   background-color: #e1264a;
   color: #fff;
@@ -127,5 +140,15 @@ label {
 .price {
   color: red;
   margin: 1rem;
+}
+
+.listBottom {
+  span {
+    float: left;
+  }
+
+  button {
+    float: right;
+  }
 }
 </style>
