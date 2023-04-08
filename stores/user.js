@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useRegisterStore = defineStore('register', () => {
+export const useUserStore = defineStore('user', () => {
   const account = ref('')
   const password = ref('')
   const vaildCode = ref('')

@@ -1,6 +1,43 @@
 <template>
-  <div>
+  <section>
+    <van-row class="title">
+      <van-col span="4" @click="back"> <van-icon name="arrow-left" size="3rem" /></van-col>
+      <van-col span="20"> <h1>新增/修改帳戶資料</h1></van-col>
+    </van-row>
+
     <van-form @submit="next" @failed="onFailed">
+      <van-cell-group inset>
+        <van-field
+          v-model="password"
+          type="password"
+          name="password"
+          label="密碼"
+          placeholder="輸入密碼"
+          autocomplete="off"
+          :rules="[
+            {
+              pattern: pwdPtn,
+              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+            }
+          ]"
+        />
+        <van-field
+          v-model="passwordConfirm"
+          type="password"
+          name="passwordConfirm"
+          label="密碼確認"
+          placeholder="再次輸入密碼"
+          autocomplete="off"
+          :error-message="pwdConfirmErr"
+          :rules="[
+            {
+              pattern: pwdPtn,
+              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+            }
+          ]"
+        />
+      </van-cell-group>
+
       <van-cell-group inset>
         <van-field
           v-model="name"
@@ -54,24 +91,34 @@
           show-word-limit
         />
       </van-cell-group>
-
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" native-type="submit">下一步</van-button></van-col
+          <van-button round type="danger" native-type="submit">儲存修改</van-button></van-col
         >
       </van-row>
     </van-form>
-  </div>
+  </section>
 </template>
 
 <script setup>
 import { useUserStore } from '@/stores/user'
 
+const password = ref('')
+const passwordConfirm = ref('')
+const pwdConfirmErr = ref('')
 const name = ref('')
 const phone = ref('')
 const introduction = ref('')
 const namePtn = /^\S.{0,13}\S?$/
 const phonePtn = /^\d{1,15}$/
+const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
+watch(passwordConfirm, (newVal) => {
+  if (newVal !== password.value) {
+    pwdConfirmErr.value = '密碼不一致'
+  } else {
+    pwdConfirmErr.value = ''
+  }
+})
 
 const appConfig = useAppConfig()
 const { addressConfig } = appConfig
@@ -85,32 +132,47 @@ const onFinish = ({ selectedOptions }) => {
   addressTxt.value = selectedOptions.map((option) => option.text).join(' ')
 }
 
-const token = useCookie('jwt-token')
+const { $request } = useNuxtApp()
 const userStore = useUserStore()
-const next = async (values) => {
-  const response = await useFetch('/member/registerStep3', {
-    method: 'post',
-    body: {
-      ...values,
-      zipcode: cascaderValue,
-      account: userStore.account,
-      password: userStore.password
-    },
-    baseURL: '/api'
+onMounted(async () => {
+  const res = await $request(`/member/profile/${userStore.account}`, 'get')
+
+  name.value = res.value.user.name
+  phone.value = res.value.user.phone
+  introduction.value = res.value.user.introduction
+
+  cascaderValue.value = res.value.user.zipcode
+
+  const townArr = []
+  addressConfig.forEach((city) => {
+    city.children.forEach((t) => {
+      t.displayText = `${city.text} ${t.text}`
+      townArr.push(t)
+    })
   })
 
-  if (response.data.value.msg === 'Success') {
-    token.value = response.data.value.data.token
-    alert('註冊成功')
-  } else {
-    alert('註冊失敗')
-  }
+  const town = townArr.filter((t) => {
+    return t.value === res.value.user.zipcode
+  })
+
+  addressTxt.value = town[0].displayText
+})
+
+const back = () => {
+  history.back()
 }
 </script>
 
 <style lang="less" scoped>
+.title {
+  background-color: #e1264a;
+  color: #fff;
+  margin-bottom: 2.5rem;
+  padding: 1rem 1rem;
+}
+
 .van-button {
-  margin: 1.5rem 0rem;
+  margin: 1rem;
 }
 
 /deep/ .van-cascader__option {

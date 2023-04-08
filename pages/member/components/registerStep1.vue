@@ -32,7 +32,10 @@
           autocomplete="off"
           :error-message="pwdConfirmErr"
           :rules="[
-            { pattern: pwdPtn, message: '需至少一個大寫字母、一個小寫字母、一個數字 和不包含空白' }
+            {
+              pattern: pwdPtn,
+              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+            }
           ]"
         />
       </van-cell-group>
@@ -53,7 +56,7 @@
 </template>
 
 <script setup>
-import { useRegisterStore } from '@/stores/register'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps({
   stepClick: {
@@ -75,7 +78,7 @@ watch(passwordConfirm, (newVal) => {
   }
 })
 
-const registerStore = useRegisterStore()
+const userStore = useUserStore()
 const next = async (values) => {
   const response = await useFetch('/member/registerStep1', {
     method: 'post',
@@ -84,9 +87,9 @@ const next = async (values) => {
   })
 
   if (response.data.value.msg === 'Success') {
-    registerStore.account = email.value
-    registerStore.password = password.value
-    registerStore.vaildCode = response.data.value.data
+    userStore.account = email.value
+    userStore.password = password.value
+    userStore.vaildCode = response.data.value.data
     props.stepClick()
   } else {
     alert('帳號已存在')

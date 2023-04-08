@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+const token = useCookie('jwt-token')
 const active = ref(0)
 
 const navChg = (index) => {
@@ -29,7 +30,12 @@ const navChg = (index) => {
       navigateTo('/casem')
       break
     case 3:
-      navigateTo('/member/login')
+      if (token.value) {
+        navigateTo('/member/account')
+      } else {
+        navigateTo('/member/login')
+      }
+
       break
   }
 }

@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { useRegisterStore } from '@/stores/register'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps({
   stepClick: {
@@ -24,11 +24,11 @@ const password = ref('')
 const errorInfo = ref('')
 const showKeyboard = ref(true)
 
-const registerStore = useRegisterStore()
+const userStore = useUserStore()
 watch(password, (newVal) => {
-  if (newVal.length === 6 && newVal !== registerStore.vaildCode) {
+  if (newVal.length === 6 && newVal !== userStore.vaildCode) {
     errorInfo.value = '驗證碼错误'
-  } else if (newVal.length === 6 && newVal === registerStore.vaildCode) {
+  } else if (newVal.length === 6 && newVal === userStore.vaildCode) {
     props.stepClick()
   }
 })

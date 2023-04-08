@@ -10,6 +10,7 @@
         <van-field
           v-model="loginModel.account"
           name="account"
+          label="帳號"
           placeholder="帳號為你的 email"
           :rules="[{ pattern: accountPtn, message: 'e-mail 格式錯誤' }]"
         />
@@ -18,6 +19,7 @@
           v-model="loginModel.password"
           type="password"
           name="password"
+          label="密碼"
           placeholder="密碼"
           autocomplete="off"
           :rules="[
@@ -53,6 +55,8 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/stores/user'
+
 useHead({
   title: `登入 | 免費接 - Buddha soho`,
   meta: [
@@ -67,6 +71,7 @@ useHead({
 const accountPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
 
+const userStore = useUserStore()
 const token = useCookie('jwt-token')
 const loginModel = reactive({
   account: '',
@@ -82,6 +87,8 @@ const login = async (values) => {
 
   if (response.data.value.msg === 'Success') {
     token.value = response.data.value.data.token
+    userStore.account = loginModel.account
+    navigateTo('/member/account')
   } else {
     alert('登入失敗')
   }
