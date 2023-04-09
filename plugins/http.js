@@ -2,6 +2,7 @@ export default defineNuxtPlugin(() => {
   return {
     provide: {
       request: async (url, method = 'post', param) => {
+        let returnData = {}
         let isF5 = true
         const { data, pending, error, refresh } = await useFetch(url, {
           method,
@@ -21,16 +22,15 @@ export default defineNuxtPlugin(() => {
           },
           onResponse({ request, response, options }) {
             // 處理請求回應的資料
-            return response._data
+            returnData = response._data
           },
           onResponseError({ request, response, error }) {
             // 處理請求回應發生的錯誤
-            console.log(`Response error: ${error.message}`)
           }
         })
 
         if (isF5) await refresh()
-        return data
+        return returnData
       }
     }
   }

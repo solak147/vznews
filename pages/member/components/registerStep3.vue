@@ -101,9 +101,9 @@ const next = async (values) => {
 
   if (response.data.value.msg === 'Success') {
     token.value = response.data.value.data.token
-    alert('註冊成功')
+    showNotify({ type: 'success', message: '註冊成功' })
   } else {
-    alert('註冊失敗')
+    showNotify({ type: 'warning', message: '註冊失敗' })
   }
 }
 </script>

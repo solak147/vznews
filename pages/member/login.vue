@@ -88,9 +88,10 @@ const login = async (values) => {
   if (response.data.value.msg === 'Success') {
     token.value = response.data.value.data.token
     userStore.account = loginModel.account
+    showNotify({ type: 'success', message: '登入成功' })
     navigateTo('/member/account')
   } else {
-    alert('登入失敗')
+    showNotify({ type: 'warning', message: '登入失敗' })
   }
 }
 

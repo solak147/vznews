@@ -5,37 +5,62 @@
       <van-col span="20"> <h1>新增/修改帳戶資料</h1></van-col>
     </van-row>
 
-    <van-form @submit="next" @failed="onFailed">
+    <van-form @submit="save" @failed="onFailed">
       <van-cell-group inset>
-        <van-field
-          v-model="password"
-          type="password"
-          name="password"
-          label="密碼"
-          placeholder="輸入密碼"
-          autocomplete="off"
-          :rules="[
-            {
-              pattern: pwdPtn,
-              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
-            }
-          ]"
-        />
-        <van-field
-          v-model="passwordConfirm"
-          type="password"
-          name="passwordConfirm"
-          label="密碼確認"
-          placeholder="再次輸入密碼"
-          autocomplete="off"
-          :error-message="pwdConfirmErr"
-          :rules="[
-            {
-              pattern: pwdPtn,
-              message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
-            }
-          ]"
-        />
+        <van-cell center title="開啟 / 關閉 修改密碼">
+          <template #right-icon>
+            <van-switch v-model="pwdSwitch" />
+          </template>
+        </van-cell>
+        <template v-if="pwdSwitch">
+          <van-field
+            v-model="oldPassword"
+            type="password"
+            name="oldPassword"
+            label="舊密碼"
+            placeholder="輸入舊密碼"
+            autocomplete="off"
+            :disabled="!pwdSwitch"
+            :rules="[
+              {
+                pattern: pwdPtn,
+                message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+              }
+            ]"
+          />
+
+          <van-field
+            v-model="password"
+            type="password"
+            name="password"
+            label="密碼"
+            placeholder="輸入密碼"
+            autocomplete="off"
+            :disabled="!pwdSwitch"
+            :rules="[
+              {
+                pattern: pwdPtn,
+                message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+              }
+            ]"
+          />
+          <van-field
+            v-model="passwordConfirm"
+            type="password"
+            name="passwordConfirm"
+            label="密碼確認"
+            placeholder="再次輸入密碼"
+            autocomplete="off"
+            :error-message="pwdConfirmErr"
+            :disabled="!pwdSwitch"
+            :rules="[
+              {
+                pattern: pwdPtn,
+                message: '需至少 8 個字，包含一個大寫字母、一個小寫字母、一個數字 和不包含空白'
+              }
+            ]"
+          />
+        </template>
       </van-cell-group>
 
       <van-cell-group inset>
@@ -93,7 +118,7 @@
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" native-type="submit">儲存修改</van-button></van-col
+          <van-button round type="danger" native-type="submit">儲存 / 修改</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -103,6 +128,8 @@
 <script setup>
 import { useUserStore } from '@/stores/user'
 
+const pwdSwitch = ref(false)
+const oldPassword = ref('')
 const password = ref('')
 const passwordConfirm = ref('')
 const pwdConfirmErr = ref('')
@@ -137,10 +164,10 @@ const userStore = useUserStore()
 onMounted(async () => {
   const res = await $request(`/member/profile/${userStore.account}`, 'get')
 
-  name.value = res.value.user.name
-  phone.value = res.value.user.phone
-  introduction.value = res.value.user.introduction
-  cascaderValue.value = res.value.user.zipcode
+  name.value = res.user.name
+  phone.value = res.user.phone
+  introduction.value = res.user.introduction
+  cascaderValue.value = res.user.zipcode
 
   const townArr = []
   addressConfig.forEach((city) => {
@@ -151,11 +178,26 @@ onMounted(async () => {
   })
 
   const town = townArr.filter((t) => {
-    return t.value === res.value.user.zipcode
+    return t.value === res.user.zipcode
   })
 
   addressTxt.value = town[0].displayText
 })
+
+const save = async (values) => {
+  const res = await $request(`/member/profile/save`, 'post', {
+    ...values,
+    zipcode: cascaderValue.value,
+    account: userStore.account,
+    pwdSwitch: pwdSwitch.value
+  })
+
+  if (res.data) {
+    showNotify({ type: 'success', message: '儲存成功' })
+  } else {
+    showNotify({ type: 'warning', message: res.msg })
+  }
+}
 
 const back = () => {
   history.back()
@@ -174,11 +216,11 @@ const back = () => {
   margin: 1rem;
 }
 
-/deep/ .van-cascader__option {
+:deep(.van-cascader__option) {
   justify-content: center;
 }
 
-/deep/ .van-tabs__nav {
+:deep(.van-tabs__nav) {
   justify-content: center;
 }
 </style>

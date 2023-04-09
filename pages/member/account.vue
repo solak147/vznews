@@ -94,4 +94,9 @@ img {
 .van-button {
   margin: 5rem 0rem;
 }
+
+:deep(.van-collapse-item__title) {
+  background-color: #e1264a;
+  color: #fff;
+}
 </style>
