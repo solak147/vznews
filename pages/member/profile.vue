@@ -140,7 +140,6 @@ onMounted(async () => {
   name.value = res.value.user.name
   phone.value = res.value.user.phone
   introduction.value = res.value.user.introduction
-
   cascaderValue.value = res.value.user.zipcode
 
   const townArr = []

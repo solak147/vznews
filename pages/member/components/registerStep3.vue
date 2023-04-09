@@ -113,11 +113,11 @@ const next = async (values) => {
   margin: 1.5rem 0rem;
 }
 
-/deep/ .van-cascader__option {
+:deep(.van-cascader__option) {
   justify-content: center;
 }
 
-/deep/ .van-tabs__nav {
+:deep(.van-tabs__nav) {
   justify-content: center;
 }
 </style>
