@@ -26,6 +26,9 @@ const navChg = (index) => {
     case 0:
       navigateTo('/')
       break
+    case 1:
+      navigateTo('/casem/create')
+      break
     case 2:
       navigateTo('/casem')
       break

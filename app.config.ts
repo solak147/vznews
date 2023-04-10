@@ -540,5 +540,30 @@ export default defineAppConfig({
         { value: '983', text: '富里鄉', AreaEngName: 'Fuli Township' }
       ]
     }
+  ],
+  price: [
+    { text: '5000以下', value: '5000' },
+    { text: '5001~1萬', value: '5001~1萬' },
+    { text: '1萬~5萬', value: '1萬~5萬' },
+    { text: '5萬~10萬', value: '5萬~10萬' },
+    { text: '10萬~30萬', value: '10萬~30萬' },
+    { text: '30萬~50萬', value: '30萬~50萬' },
+    { text: '50萬~80萬', value: '50萬~80萬' },
+    { text: '80~100萬', value: '80萬~100萬' },
+    { text: '100萬~300萬', value: '100萬~300萬' },
+    { text: '300萬以上', value: '300萬以上' }
+  ],
+  caseType: [
+    { text: '平面設計', value: '平面設計' },
+    { text: '網頁設計', value: '網頁設計' },
+    { text: '程式開發', value: '程式開發' },
+    { text: '翻譯寫作', value: '翻譯寫作 ' },
+    { text: '商攝娛樂', value: '商攝娛樂' },
+    { text: '影像製作', value: '影像製作' },
+    { text: '空間設計', value: '空間設計' },
+    { text: '生活服務', value: '生活服務' },
+    { text: '活動企劃', value: '活動企劃' },
+    { text: '專業顧問', value: '專業顧問' },
+    { text: '資訊工程', value: '資訊工程' }
   ]
 })
