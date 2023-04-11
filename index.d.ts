@@ -4,11 +4,11 @@ declare module '@nuxt/schema' {
         addressConfig: {
           text: string;
           value: string;
-          CityEngName: string;
+          cityEngName: string;
           children: {
             value: string;
             text: string;
-            AreaEngName: string;
+            areaEngName: string;
           }[];
         }[];
       }

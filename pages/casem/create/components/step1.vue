@@ -13,8 +13,6 @@
       </van-swipe>
     </van-notice-bar>
 
-    <van-progress :percentage="50" stroke-width="8" track-color="#ADADAD" />
-
     <van-form @submit="next" @failed="onFailed">
       <van-cell-group inset>
         <van-field
@@ -54,6 +52,12 @@
 import { useCaseStore } from '@/stores/case'
 const caseStore = useCaseStore()
 
+const props = defineProps({
+  stepClick: {
+    type: Function
+  }
+})
+
 const title = ref('')
 const titlePtn = /^.{3,20}$/
 
@@ -69,9 +73,17 @@ const onConfirm = ({ selectedOptions }) => {
 }
 
 const next = () => {
+  if (!type.value) {
+    showDialog({
+      message: '類別未選擇',
+      theme: 'round-button'
+    }).then(() => {})
+    return
+  }
+
   caseStore.title = title.value
   caseStore.type = type.value
-  navigateTo('/casem/create/detail')
+  props.stepClick()
 }
 </script>
 

@@ -5,16 +5,24 @@
       <van-col span="20"> <h1>立即發案</h1></van-col>
     </van-row>
 
-    <component :is="stepComponents[step]" :step-click="stepClick" />
+    <van-progress :percentage="percent" stroke-width="40" track-color="#ADADAD" />
+
+    <component :is="stepComponents[step]" :step-click="stepclick" />
   </section>
 </template>
 
 <script setup>
 import step1 from './components/step1.vue'
 import step2 from './components/step2.vue'
+import step3 from './components/step3.vue'
 
-const step = ref(1)
-const stepComponents = [step1, step2]
+const step = ref(0)
+const stepComponents = [step1, step2, step3]
+const percent = ref(0)
+const stepclick = () => {
+  step.value += 1
+  percent.value += 25
+}
 
 const back = () => {
   history.back()
