@@ -79,7 +79,7 @@ const loginModel = reactive({
 })
 const login = async (values) => {
   console.log(values)
-  const response = await useFetch('/member/login', {
+  const response = await useFetch('/login', {
     method: 'post',
     body: loginModel,
     baseURL: '/api'

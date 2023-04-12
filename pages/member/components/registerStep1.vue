@@ -80,7 +80,7 @@ watch(passwordConfirm, (newVal) => {
 
 const userStore = useUserStore()
 const next = async (values) => {
-  const response = await useFetch('/member/registerStep1', {
+  const response = await useFetch('/registerStep1', {
     method: 'post',
     body: values,
     baseURL: '/api'
