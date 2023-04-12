@@ -10,22 +10,24 @@ export const useCaseStore = defineStore(
     // step2
     const expectDate = ref('')
     const expectDateChk = ref('')
-    const price = ref('')
+    const expectMoney = ref('')
     const workArea = ref('')
     const workAreaChk = ref('')
     const kind = ref('')
-    const content = ref('')
+    const workContent = ref('')
+    const fileList = ref([])
 
     return {
       title,
       type,
       expectDate,
       expectDateChk,
-      price,
+      expectMoney,
       workArea,
       workAreaChk,
       kind,
-      content
+      workContent,
+      fileList
     }
   },
   {

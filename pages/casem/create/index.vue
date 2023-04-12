@@ -18,7 +18,7 @@ import step3 from './components/step3.vue'
 
 const step = ref(0)
 const stepComponents = [step1, step2, step3]
-const percent = ref(0)
+const percent = ref(25)
 const stepclick = () => {
   step.value += 1
   percent.value += 25

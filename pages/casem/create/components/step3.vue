@@ -12,7 +12,7 @@
         <van-field
           v-model="name"
           name="聯絡人"
-          label="聯絡人"
+          label="name"
           required
           placeholder="請輸入聯絡人"
           :rules="[{ pattern: namePtn, required: true, message: '請輸入正確格式' }]"
@@ -26,71 +26,78 @@
           :rules="[{ pattern: phonePtn, required: true, message: '請輸入正確格式' }]"
         />
 
-        <van-field name="radio" label="市話">
+        <van-field label="市話">
           <template #input>
             <van-field
-              v-model="phone"
-              name="phoneCity"
-              placeholder="請輸入聯絡電話"
-              maxlength="2"
+              v-model="cityTalk"
+              name="cityTalk"
+              placeholder="市話"
               style="width: 6rem"
-              :rules="[{ message: '請輸入正確格式' }]"
+              :rules="[{ pattern: /^\d{0,4}$/, message: '錯誤' }]"
             />
             -
             <van-field
-              v-model="phone"
-              name="phone"
-              placeholder="請輸入聯絡電話"
-              maxlength="8"
-              :rules="[{ pattern: phonePtn, message: '請輸入正確格式' }]"
+              v-model="cityTalk2"
+              name="cityTalk2"
+              placeholder="市話"
+              :rules="[{ pattern: /^\d{0,10}$/, message: '請輸入正確格式' }]"
             />
           </template>
         </van-field>
         <van-field
-          v-model="phone"
-          name="phone"
+          v-model="extension"
+          name="extension"
           label="分機"
-          placeholder="請輸入聯絡電話"
+          placeholder="分機"
           style="margin-left: 9rem"
-          :rules="[{ pattern: phonePtn, message: '請輸入正確格式' }]"
+          :rules="[{ pattern: /^\d{0,5}$/, message: '請輸入正確格式' }]"
         />
       </van-cell-group>
 
       <van-cell-group inset>
         <label><span> * </span>聯絡時段 (複選)：</label>
 
-        <van-checkbox-group v-model="checked">
-          <van-checkbox name="a">9:00 ~ 12:00</van-checkbox>
-          <van-checkbox name="b">13:00 ~ 18:00</van-checkbox>
-          <van-checkbox name="b">19:00 ~ 21:00</van-checkbox>
-          <van-checkbox name="b">不接聽手機</van-checkbox>
+        <van-checkbox-group v-model="timeChk">
+          <van-checkbox name="m">9:00 ~ 12:00</van-checkbox>
+          <van-checkbox name="a">13:00 ~ 18:00</van-checkbox>
+          <van-checkbox name="n">19:00 ~ 21:00</van-checkbox>
+          <van-checkbox name="x">不接聽手機</van-checkbox>
         </van-checkbox-group>
       </van-cell-group>
 
       <van-cell-group inset>
         <van-field
-          v-model="phone"
-          name="phone"
+          v-model="email"
+          name="email"
           label="E-mail :"
           required
-          placeholder="請輸入聯絡電話"
-          :rules="[{ pattern: phonePtn, required: true, message: '請輸入正確格式' }]"
+          placeholder="請輸入 E-mail"
+          :rules="[{ pattern: emailPtn, required: true, message: 'E-mail 格式錯誤' }]"
         />
       </van-cell-group>
 
       <van-cell-group inset>
         <van-field
-          v-model="phone"
-          name="phone"
+          v-model="line"
+          name="line"
           label="Line ID :"
-          placeholder="請輸入聯絡電話"
-          :rules="[{ pattern: phonePtn, required: true, message: '請輸入正確格式' }]"
+          placeholder="請輸入Line ID"
+          :rules="[{ pattern: linePtn, message: '請輸入正確格式' }]"
         />
+      </van-cell-group>
+
+      <van-cell-group inset>
+        <van-checkbox v-model="lawChk">
+          我已仔細閱讀並明瞭 「<a href="#">服務條款</a>」、「<a href="#">刊登規則</a>」、<a href="#"
+            >「接案會員服務條款</a
+          >」、「<a href="#">隱私權聲明</a>」、「<a href="#">免責聲明</a
+          >」等所載內容及其意義，茲同意該等條款規定，並願遵守網站現今、嗣後規範的各種規則。
+        </van-checkbox>
       </van-cell-group>
 
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" native-type="submit">下一步</van-button></van-col
+          <van-button round type="danger" native-type="submit">送出</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -98,12 +105,52 @@
 </template>
 
 <script setup>
-const phone = ref('')
-const name = ref('')
-const phonePtn = /^\d{1,15}$/
-const namePtn = /^\S.{0,13}\S?$/
+import { useCaseStore } from '@/stores/case'
+const caseStore = useCaseStore()
 
-const checked = ref(['a', 'b'])
+const name = ref('')
+const phone = ref('')
+const cityTalk = ref('')
+const cityTalk2 = ref('')
+const extension = ref('')
+const namePtn = /^\S.{0,13}\S?$/
+const phonePtn = /^\d{1,15}$/
+
+const timeChk = ref([])
+
+const email = ref('')
+const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+const line = ref('')
+const linePtn = /^[a-zA-Z0-9_-]*$/
+
+const lawChk = ref(false)
+
+const next = async (values) => {
+  if (timeChk.value.length === 0) {
+    showDialog({
+      message: '聯絡時段未選擇',
+      theme: 'round-button'
+    })
+  }
+
+  if (!lawChk.value) {
+    showDialog({
+      message: '必須勾選同意服務條款',
+      theme: 'round-button'
+    })
+  }
+
+  const response = await useFetch('/case/create', {
+    method: 'post',
+    body: {
+      ...caseStore,
+      ...values,
+      time: timeChk.value
+    },
+    baseURL: '/api'
+  })
+}
 </script>
 
 <style lang="less" scoped>
@@ -132,5 +179,10 @@ label {
     margin: 1rem;
     font-size: 1.3rem;
   }
+}
+
+.van-button {
+  margin-bottom: 5rem;
+  width: 8rem;
 }
 </style>

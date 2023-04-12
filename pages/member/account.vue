@@ -21,7 +21,7 @@
           </van-collapse-item>
         </van-collapse>
 
-        <van-collapse v-model="setSoho">
+        <van-collapse v-model="priceRecord">
           <van-collapse-item title="報價紀錄" name="1">
             <div>
               <NuxtLink> 報價紀錄 </NuxtLink>
@@ -29,7 +29,7 @@
           </van-collapse-item>
         </van-collapse>
 
-        <van-collapse v-model="setSoho">
+        <van-collapse v-model="collect">
           <van-collapse-item title="我的收藏" name="1">
             <div>
               <NuxtLink> 我的收藏 </NuxtLink>
@@ -37,7 +37,7 @@
           </van-collapse-item>
         </van-collapse>
 
-        <van-collapse v-model="setSoho">
+        <van-collapse v-model="bonus">
           <van-collapse-item title="加值服務" name="1">
             <div>
               <NuxtLink> 加值服務 </NuxtLink>
@@ -45,7 +45,7 @@
           </van-collapse-item>
         </van-collapse>
 
-        <van-collapse v-model="setSoho">
+        <van-collapse v-model="notify">
           <van-collapse-item title="通知管理" name="1">
             <div>
               <NuxtLink> 通知管理 </NuxtLink>
@@ -61,13 +61,23 @@
       </van-collapse-item>
     </van-collapse>
 
-    <van-button round block type="danger" native-type="button" @click="logout"> 登出 </van-button>
+    <van-row>
+      <van-col style="text-align: center" span="24">
+        <van-button round type="danger" native-type="button" @click="logout"
+          >登出</van-button
+        ></van-col
+      >
+    </van-row>
   </section>
 </template>
 
 <script setup>
 const activeRole = ref(0)
-const setSoho = ref(['0'])
+const setSoho = ref(['1'])
+const priceRecord = ref([''])
+const collect = ref([''])
+const bonus = ref([''])
+const notify = ref([''])
 const acticeAccount = ref(['1'])
 const token = useCookie('jwt-token')
 
@@ -98,5 +108,15 @@ img {
 :deep(.van-collapse-item__title) {
   background-color: #e1264a;
   color: #fff;
+}
+
+:deep(.van-collapse-item__content div) {
+  margin: 1.2rem;
+  color: black;
+}
+
+.van-button {
+  margin-bottom: 5rem;
+  width: 8rem;
 }
 </style>

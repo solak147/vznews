@@ -42,7 +42,7 @@
 
           <input
             v-model="expectMoney"
-            style="width: 8rem; margin-left: 3rem"
+            style="width: 8rem; margin-left: 3rem; font-size: 1.3rem"
             readonly
             @click="showExpectMoney = true"
           />
@@ -101,7 +101,7 @@
 
       <van-cell-group inset>
         <van-space direction="vertical">
-          <label><span> * </span>附件上傳 :</label>
+          <label>附件上傳 :</label>
           <p>
             最多可上傳5個附件，每個附件不可超過2MB。(檔案格式為：.doc,.pdf,.ppt,.jpf,.gif,.png,.txt)
           </p>
@@ -196,16 +196,18 @@ const workContent = ref('')
 const fileList = ref([])
 const onOversize = (file) => {
   console.log(file)
-  showToast('文件大小不能超过 2mb')
+  showToast('文件大小不能超过 2MB')
 }
 
 const afterRead = (file) => {
-  // file.status = 'uploading'
-  // file.message = '上传中...'
-  // setTimeout(() => {
-  //   file.status = 'failed'
-  //   file.message = '上传失败'
-  // }, 1000)
+  file.status = 'uploading'
+  file.message = '上傳中...'
+
+  setTimeout(() => {
+    file.name = file.file.name
+    file.status = 'done'
+    file.message = '上傳成功'
+  }, 1000)
 }
 
 const next = () => {
@@ -217,9 +219,44 @@ const next = () => {
     return
   }
 
-  if (!expectDate.value || !expectDay.value) {
+  if (
+    (!expectDate.value && expectDateChk.value === '1') ||
+    (!expectDay.value && expectDateChk.value === '2')
+  ) {
     showDialog({
       message: '預計完成日輸入不完整',
+      theme: 'round-button'
+    })
+    return
+  }
+
+  if (!expectMoney.value) {
+    showDialog({
+      message: '預算未選擇',
+      theme: 'round-button'
+    })
+    return
+  }
+
+  if (workAreaChk.value === '0' && !workArea.value) {
+    showDialog({
+      message: '遠端工作：指定工作地點輸入不完整',
+      theme: 'round-button'
+    })
+    return
+  }
+
+  if (!kindChk.value) {
+    showDialog({
+      message: '需求類型未選擇',
+      theme: 'round-button'
+    })
+    return
+  }
+
+  if (!workContent.value) {
+    showDialog({
+      message: '工作內容描述未填寫',
       theme: 'round-button'
     })
     return
@@ -240,7 +277,7 @@ const next = () => {
       break
   }
 
-  caseStore.price = expectMoney.value
+  caseStore.expectMoney = expectMoney.value
 
   switch (workAreaChk.value) {
     case '0':
@@ -254,7 +291,8 @@ const next = () => {
   }
 
   caseStore.kind = kindChk.value
-  caseStore.content = workContent.value
+  caseStore.workContent = workContent.value
+  caseStore.fileList = fileList.value
   props.stepClick()
 }
 </script>

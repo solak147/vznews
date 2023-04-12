@@ -31,6 +31,19 @@ export default defineNuxtPlugin(() => {
 
         if (isF5) await refresh()
         return returnData
+      },
+
+      updload: (files) => {
+        const { $axios } = useFetch()
+        const formData = new FormData()
+
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files[]', files[i])
+        }
+
+        $axios.post('/upload', formData).then((res) => {
+          console.log('upload response:', res.data)
+        })
       }
     }
   }
