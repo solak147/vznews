@@ -7,7 +7,9 @@
 
     <van-progress :percentage="percent" stroke-width="40" track-color="#ADADAD" />
 
-    <component :is="stepComponents[step]" :step-click="stepclick" />
+    <transition>
+      <component :is="stepComponents[step]" :step-click="stepclick" />
+    </transition>
   </section>
 </template>
 
@@ -43,5 +45,15 @@ form {
   color: #fff;
   margin-bottom: 2.5rem 0rem;
   padding: 1rem 1rem;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.4s;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
 }
 </style>
