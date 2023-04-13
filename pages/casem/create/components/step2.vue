@@ -79,8 +79,8 @@
         <label><span> * </span>需求類型 ?</label>
 
         <van-radio-group v-model="kindChk" direction="horizontal">
-          <van-radio name="1">一般案件</van-radio>
-          <van-radio name="2">急件</van-radio>
+          <van-radio name="o">一般案件</van-radio>
+          <van-radio name="i">急件</van-radio>
         </van-radio-group>
       </van-cell-group>
 
