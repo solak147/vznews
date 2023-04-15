@@ -11,8 +11,8 @@
       <van-cell-group inset>
         <van-field
           v-model="name"
-          name="聯絡人"
-          label="name"
+          name="name"
+          label="聯絡人"
           required
           placeholder="請輸入聯絡人"
           :rules="[{ pattern: namePtn, required: true, message: '請輸入正確格式' }]"
@@ -49,7 +49,6 @@
           name="extension"
           label="分機"
           placeholder="分機"
-          style="margin-left: 9rem"
           :rules="[{ pattern: /^\d{0,5}$/, message: '請輸入正確格式' }]"
         />
       </van-cell-group>
@@ -106,7 +105,10 @@
 
 <script setup>
 import { useCaseStore } from '@/stores/case'
+import { useUserStore } from '@/stores/user'
 const caseStore = useCaseStore()
+const userStore = useUserStore()
+const { $request } = useNuxtApp()
 
 const name = ref('')
 const phone = ref('')
@@ -141,15 +143,26 @@ const next = async (values) => {
     })
   }
 
-  const response = await useFetch('/case/create', {
-    method: 'post',
-    body: {
-      ...caseStore,
-      ...values,
-      time: timeChk.value
-    },
-    baseURL: '/api'
+  const res = await $request('/case/create', 'post', {
+    ...caseStore,
+    ...values,
+    account: userStore.account,
+    contactTime: timeChk.value.join()
   })
+
+  if (res.code === 0) {
+    showDialog({
+      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
+      theme: 'round-button'
+    }).then(() => {
+      navigateTo('/')
+    })
+  } else {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+  }
 }
 </script>
 

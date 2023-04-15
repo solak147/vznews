@@ -152,7 +152,7 @@ const expectDay = ref('')
 const showExpectDay = ref(false)
 const colDay = []
 for (let i = 1; i <= 30; i++) {
-  colDay.push({ text: i, value: i })
+  colDay.push({ text: i.toString(), value: i })
 }
 
 const onDayConfirm = ({ selectedOptions }) => {
@@ -174,7 +174,7 @@ const onMoneyConfirm = ({ selectedOptions }) => {
 
 // 是否遠端工作
 const workArea = ref('')
-const workAreaChk = ref('1')
+const workAreaChk = ref('')
 const showWorkArea = ref(false)
 const cityArr = []
 addressConfig.forEach((city) => {
@@ -187,7 +187,7 @@ const onWorkAreaConfirm = ({ selectedOptions }) => {
 }
 
 // 需求類型
-const kindChk = ref('1')
+const kindChk = ref('')
 
 // 工作內容
 const workContent = ref('')
@@ -238,6 +238,14 @@ const next = () => {
     return
   }
 
+  if (!workAreaChk.value) {
+    showDialog({
+      message: '遠端工作未選擇',
+      theme: 'round-button'
+    })
+    return
+  }
+
   if (workAreaChk.value === '0' && !workArea.value) {
     showDialog({
       message: '遠端工作：指定工作地點輸入不完整',
@@ -262,30 +270,27 @@ const next = () => {
     return
   }
 
+  caseStore.expectDateChk = expectDateChk.value
   switch (expectDateChk.value) {
     case '1':
-      caseStore.expectDateChk = 1
       caseStore.expectDate = expectDate.value
       break
     case '2':
-      caseStore.expectDateChk = 2
       caseStore.expectDate = expectDay.value
       break
     case '3':
-      caseStore.expectDateChk = 3
       caseStore.expectDate = ''
       break
   }
 
   caseStore.expectMoney = expectMoney.value
 
+  caseStore.workAreaChk = workAreaChk.value
   switch (workAreaChk.value) {
     case '0':
-      caseStore.workAreaChk = 0
       caseStore.workArea = workArea.value
       break
     case '1':
-      caseStore.workAreaChk = 1
       caseStore.workArea = ''
       break
   }
