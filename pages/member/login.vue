@@ -68,6 +68,16 @@ useHead({
   ]
 })
 
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
+
+onMounted(() => {
+  props.navActive(3)
+})
+
 const accountPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const pwdPtn = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\S{8,16}$/
 

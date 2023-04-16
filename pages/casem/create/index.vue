@@ -18,6 +18,16 @@ import step1 from './components/step1.vue'
 import step2 from './components/step2.vue'
 import step3 from './components/step3.vue'
 
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
+
+onMounted(() => {
+  props.navActive(1)
+})
+
 const step = ref(0)
 const stepComponents = [step1, step2, step3]
 const percent = ref(25)

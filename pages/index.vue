@@ -144,7 +144,17 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
+
 const bannerArr = ['images/banner1.jpg', 'images/banner2.jpg', 'images/banner3.jpg']
+
+onMounted(() => {
+  props.navActive(0)
+})
 </script>
 
 <style lang="less" scoped>

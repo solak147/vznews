@@ -19,6 +19,14 @@
 const token = useCookie('jwt-token')
 const active = ref(0)
 
+const navActiveFn = (index) => {
+  active.value = index
+}
+
+defineExpose({
+  navActiveFn
+})
+
 const navChg = (index) => {
   active.value = index
 

@@ -2,15 +2,23 @@
   <div>
     <NuxtLayout>
       <main>
-        <NuxtPage />
+        <NuxtPage :nav-active="callNavActive" />
       </main>
       <template #header>
-        <CptHeader></CptHeader>
+        <CptHeader ref="cptHeader" />
       </template>
       <template #footer> </template>
     </NuxtLayout>
   </div>
 </template>
+
+<script setup>
+const cptHeader = ref(null)
+
+const callNavActive = (index) => {
+  cptHeader.value?.navActiveFn(index)
+}
+</script>
 
 <style>
 .page-enter-active,

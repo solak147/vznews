@@ -52,6 +52,16 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
+
+onMounted(() => {
+  props.navActive(2)
+})
+
 const value1 = ref(0)
 const value2 = ref('a')
 const value3 = ref('a')
