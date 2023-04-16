@@ -108,7 +108,14 @@ import { useCaseStore } from '@/stores/case'
 import { useUserStore } from '@/stores/user'
 const caseStore = useCaseStore()
 const userStore = useUserStore()
-const { $request } = useNuxtApp()
+const { $request, $upload } = useNuxtApp()
+
+onMounted(async () => {
+  const res = await $request(`/member/profile/${userStore.account}`, 'get')
+  name.value = res.user.name
+  phone.value = res.user.phone
+  email.value = res.user.email
+})
 
 const name = ref('')
 const phone = ref('')
@@ -150,7 +157,17 @@ const next = async (values) => {
     contactTime: timeChk.value.join()
   })
 
-  if (res.code === 0) {
+  if (res.code !== 0) {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+    return
+  }
+
+  const resFile = await $upload(caseStore.fileList)
+
+  if (resFile.code === 0) {
     showDialog({
       message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
       theme: 'round-button'
@@ -159,8 +176,10 @@ const next = async (values) => {
     })
   } else {
     showDialog({
-      message: res.msg,
+      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待。(附件上傳失敗，請於案件編輯頁查看)',
       theme: 'round-button'
+    }).then(() => {
+      navigateTo('/')
     })
   }
 }

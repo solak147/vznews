@@ -88,7 +88,7 @@ const onFinish = ({ selectedOptions }) => {
 const token = useCookie('jwt-token')
 const userStore = useUserStore()
 const next = async (values) => {
-  const response = await useFetch('/member/registerStep3', {
+  const res = await useFetch('/registerStep3', {
     method: 'post',
     body: {
       ...values,
@@ -99,9 +99,10 @@ const next = async (values) => {
     baseURL: '/api'
   })
 
-  if (response.data.value.msg === 'Success') {
-    token.value = response.data.value.data.token
+  if (res.data.value.code === 0) {
+    token.value = res.data.value.data.token
     showNotify({ type: 'success', message: '註冊成功' })
+    navigateTo('/member/account')
   } else {
     showNotify({ type: 'warning', message: '註冊失敗' })
   }

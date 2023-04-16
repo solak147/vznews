@@ -204,7 +204,6 @@ const afterRead = (file) => {
   file.message = '上傳中...'
 
   setTimeout(() => {
-    file.name = file.file.name
     file.status = 'done'
     file.message = '上傳成功'
   }, 1000)
