@@ -7,8 +7,9 @@
 
     <van-tabs v-model:active="activeRole">
       <van-tab>
-        <template #title> <van-icon name="description" />發案主 </template></van-tab
-      >
+        <template #title> <van-icon name="description" />發案主 </template>
+        <img src="@/assets/images/accountCase.jpg" @click="navigateTo('/casem/create')"
+      /></van-tab>
       <van-tab>
         <template #title> <van-icon name="user-o" />接案者 </template>
         <img src="@/assets/images/accountSoho.jpg" @click="navigateTo('/casem')" />

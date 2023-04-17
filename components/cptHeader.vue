@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-const token = useCookie('jwt-token')
 const active = ref(0)
 
 const navActiveFn = (index) => {
@@ -28,6 +27,7 @@ defineExpose({
 })
 
 const navChg = (index) => {
+  const token = useCookie('jwt-token')
   active.value = index
 
   switch (index) {
