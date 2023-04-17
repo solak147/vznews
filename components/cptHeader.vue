@@ -42,7 +42,7 @@ const navChg = (index) => {
       break
     case 3:
       if (token.value) {
-        navigateTo('/member/account')
+        navigateTo('/member')
       } else {
         navigateTo('/member/login')
       }

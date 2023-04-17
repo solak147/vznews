@@ -6,17 +6,20 @@
     </van-row>
 
     <van-tabs v-model:active="activeRole">
-      <van-tab title="發案主">内容 1</van-tab>
-      <van-tab title="接案者">
+      <van-tab>
+        <template #title> <van-icon name="description" />發案主 </template></van-tab
+      >
+      <van-tab>
+        <template #title> <van-icon name="user-o" />接案者 </template>
         <img src="@/assets/images/accountSoho.jpg" @click="navigateTo('/casem')" />
 
         <van-collapse v-model="setSoho">
           <van-collapse-item title="接案設定" name="1">
             <div>
-              <NuxtLink> 接案資料設定 </NuxtLink>
+              <NuxtLink to="/member/recSetting"> 接案資料設定 </NuxtLink>
             </div>
             <div>
-              <NuxtLink> 我的作品 </NuxtLink>
+              <NuxtLink to="/member/recWork"> 我的作品 </NuxtLink>
             </div>
           </van-collapse-item>
         </van-collapse>
@@ -118,5 +121,25 @@ img {
 .van-button {
   margin-bottom: 5rem;
   width: 8rem;
+}
+
+:deep(.van-tabs__nav) {
+  background-color: #e1264a;
+
+  .van-tab {
+    color: #ea8383;
+    font-size: 1.5rem;
+    i {
+      margin-right: 2rem;
+    }
+  }
+
+  .van-tab:first-child {
+    border-right: 0.1rem solid #fff;
+  }
+
+  .van-tab--active {
+    color: #fff;
+  }
 }
 </style>

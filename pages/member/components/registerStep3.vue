@@ -102,7 +102,7 @@ const next = async (values) => {
   if (res.data.value.code === 0) {
     token.value = res.data.value.data.token
     showNotify({ type: 'success', message: '註冊成功' })
-    navigateTo('/member/account')
+    navigateTo('/member')
   } else {
     showNotify({ type: 'warning', message: '註冊失敗' })
   }

@@ -150,11 +150,17 @@ const next = async (values) => {
     })
   }
 
+  const filesName = []
+  caseStore.fileList.forEach((e) => {
+    filesName.push(e.file.name)
+  })
+
   const res = await $request('/case/create', 'post', {
     ...caseStore,
     ...values,
     account: userStore.account,
-    contactTime: timeChk.value.join()
+    contactTime: timeChk.value.join(),
+    filesName
   })
 
   if (res.code !== 0) {

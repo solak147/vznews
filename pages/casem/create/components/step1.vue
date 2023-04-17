@@ -31,7 +31,7 @@
           is-link
           readonly
           required
-          name="picker"
+          name="type"
           label="選擇類別"
           placeholder="點擊選擇類別"
           @click="showPicker = true"

@@ -565,5 +565,13 @@ export default defineAppConfig({
     { text: '活動企劃', value: '活動企劃' },
     { text: '專業顧問', value: '專業顧問' },
     { text: '資訊工程', value: '資訊工程' }
+  ],
+  experience: [
+    { text: '無接案經驗', value: '無接案經驗' },
+    { text: '0~1年接案經驗', value: '0~1年接案經驗' },
+    { text: '1~3年接案經驗', value: '1~3年接案經驗' },
+    { text: '3~5年接案經驗', value: '3~5年接案經驗' },
+    { text: '5~10年接案經驗', value: '5~10年接案經驗' },
+    { text: '10年以上接案經驗', value: '10年以上接案經驗' }
   ]
 })

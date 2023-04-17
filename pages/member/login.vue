@@ -99,7 +99,7 @@ const login = async (values) => {
     token.value = response.data.value.data.token
     userStore.account = loginModel.account
     showNotify({ type: 'success', message: '登入成功' })
-    navigateTo('/member/account')
+    navigateTo('/member')
   } else {
     showNotify({ type: 'warning', message: '登入失敗' })
   }
