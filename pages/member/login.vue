@@ -95,7 +95,7 @@ const login = async (values) => {
     baseURL: '/api'
   })
 
-  if (response.data.value.msg === 'Success') {
+  if (response.data.value.code === 0) {
     token.value = response.data.value.data.token
     userStore.account = loginModel.account
     showNotify({ type: 'success', message: '登入成功' })

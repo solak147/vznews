@@ -1,14 +1,11 @@
 <template>
   <section>
-    <van-row class="title">
-      <van-col span="4" @click="back"> <van-icon name="arrow-left" size="3rem" /></van-col>
-      <van-col span="20"> <h1>案件瀏覽</h1></van-col>
-    </van-row>
+    <NavBar title="案件瀏覽" />
 
     <van-search v-model="value" placeholder="请输入搜索关键词" />
 
-    <van-dropdown-menu>
-      <van-dropdown-item v-model="value1" :options="option1" />
+    <van-dropdown-menu @change="caseChg">
+      <van-dropdown-item v-model="caseVal" :options="caseOpt" />
       <van-dropdown-item v-model="value2" :options="option2" />
       <van-dropdown-item v-model="value3" :options="option3" />
     </van-dropdown-menu>
@@ -31,19 +28,23 @@
     >
       <van-cell v-for="item in list" :key="item" @click="navigateTo('/casem/1')">
         <template #title>
-          <label>尋找演員</label>
+          <label>{{ item._source.title }}</label>
           <div class="subTitle">
-            <van-icon name="location" color="#00BB00" />台中 <span class="price">$1000</span>
+            <van-icon name="location" color="#00BB00" />{{
+              item._source.work_area_chk === '1' ? '不限' : item._source.work_area
+            }}
+            <span class="price">${{ item._source.expect_money }}</span>
           </div>
           <div style="float: right"><van-icon name="fire" color="#FFDC35" />0-5人報價</div>
         </template>
         <template #label>
-          <van-text-ellipsis rows="4" :content="text" />
+          <van-text-ellipsis rows="4" :content="item._source.work_content" />
 
           <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
 
           <div class="listBottom">
-            <span>5分鐘前更新</span><van-button type="danger">申請報價</van-button>
+            <span>{{ calTimeDiff(item._source.updated_at) }}</span
+            ><van-button type="danger">申請報價</van-button>
           </div>
         </template>
       </van-cell>
@@ -52,6 +53,7 @@
 </template>
 
 <script setup>
+const { $request } = useNuxtApp()
 const props = defineProps({
   navActive: {
     type: Function
@@ -62,18 +64,32 @@ onMounted(() => {
   props.navActive(2)
 })
 
-const value1 = ref(0)
 const value2 = ref('a')
 const value3 = ref('a')
 
-const text =
-  'Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。'
-
-const option1 = [
-  { text: '全部案件', value: 0 },
-  { text: '新款商品', value: 1 },
-  { text: '活动商品', value: 2 }
+// menu case
+const caseVal = ref(0)
+const caseOpt = [
+  { text: '全部案件', value: '' },
+  { text: '一般案件', value: 'o' },
+  { text: '急件', value: 'i' }
 ]
+
+const caseChg = async () => {
+  const res = await $request(
+    `/case/get?from=${from.value}&size=${size.value}&kind=${kind.value}`,
+    'get'
+  )
+
+  if (res.code === -1) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  } else {
+    list.value = []
+    list.value.push(res.data)
+    from.value += 10
+  }
+}
+
 const option2 = [
   { text: '默认排序', value: 'a' },
   { text: '好评排序', value: 'b' },
@@ -85,30 +101,63 @@ const option3 = [
   { text: '销量排序', value: 'c' }
 ]
 
+const from = ref(0)
+const size = ref(30)
 const list = ref([])
 const loading = ref(false)
 const finished = ref(false)
 
-const onLoad = () => {
+const onLoad = async () => {
+  // 加载状态结束
+  loading.value = true
+
   // 异步更新数据
-  // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-  setTimeout(() => {
-    for (let i = 0; i < 10; i++) {
-      list.value.push(list.value.length + 1)
-    }
+  const res = await $request(
+    `/case/get?from=${from.value}&size=${size.value}&kind=${kind.value}`,
+    'get'
+  )
 
-    // 加载状态结束
-    loading.value = false
+  if (res.code === -1) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  } else {
+    list.value.push(res.data)
+    from.value += 10
+  }
+  loading.value = false
 
-    // 数据全部加载完成
-    if (list.value.length >= 40) {
-      finished.value = true
-    }
-  }, 1000)
+  finished.value = true
+  //   if (list.value.length >= 40) {
+  //     finished.value = true
+  //   }
 }
 
-const back = () => {
-  history.back()
+const calTimeDiff = (dateString) => {
+  const now = new Date()
+  const date = new Date(dateString)
+  const diff = (now.getTime() - date.getTime()) / 1000 / 60
+
+  const lstUpdMin = Math.round(diff)
+  if (lstUpdMin < 60) {
+    return `${lstUpdMin}分鐘前 更新`
+  } else if (lstUpdMin >= 60 && lstUpdMin < 60 * 24) {
+    return `${Math.floor(lstUpdMin / 60)}小時前 更新`
+  } else if (lstUpdMin >= 60 * 24 && lstUpdMin <= 60 * 24 * 30) {
+    return `${Math.floor((lstUpdMin / 60) * 24)}天前 更新`
+  } else {
+    let day = date.getDate()
+    let month = date.getMonth()
+    const year = date.getFullYear()
+
+    if (day < 10) {
+      day = `0${day}`
+    }
+
+    if (month < 10) {
+      month = `0${month}`
+    }
+
+    return `${year}/${month}/${day} 更新`
+  }
 }
 </script>
 
