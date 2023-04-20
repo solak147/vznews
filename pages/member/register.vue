@@ -1,9 +1,6 @@
 <template>
   <section>
-    <van-row class="title">
-      <van-col span="4" @click="back"> <van-icon name="arrow-left" size="3rem" /></van-col>
-      <van-col span="20"> <h1>會員註冊</h1></van-col>
-    </van-row>
+    <NavBar title="會員註冊" />
 
     <van-steps :active="step">
       <van-step>1.輸入e-mail</van-step>
@@ -34,22 +31,11 @@ const stepComponents = [regStep1, regStep2, regStep3]
 const stepClick = () => {
   step.value += 1
 }
-
-const back = () => {
-  history.back()
-}
 </script>
 
 <style lang="less" scoped>
 a {
   text-decoration: underline;
-}
-
-.title {
-  background-color: #e1264a;
-  color: #fff;
-  margin-bottom: 2.5rem;
-  padding: 1rem 1rem;
 }
 
 .van-steps {

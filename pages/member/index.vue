@@ -1,9 +1,6 @@
 <template>
   <section>
-    <van-row class="title">
-      <van-col span="4" @click="back"> <van-icon name="arrow-left" size="3rem" /></van-col>
-      <van-col span="20"> <h1>我的帳戶</h1></van-col>
-    </van-row>
+    <NavBar title="我的帳戶" />
 
     <van-tabs v-model:active="activeRole">
       <van-tab>
@@ -98,19 +95,12 @@ img {
   display: block;
 }
 
-.title {
-  background-color: #e1264a;
-  color: #fff;
-  margin-bottom: 2.5rem;
-  padding: 1rem 1rem;
-}
-
 .van-button {
   margin: 5rem 0rem;
 }
 
 :deep(.van-collapse-item__title) {
-  background-color: #e1264a;
+  background-color: #424246;
   color: #fff;
 }
 
@@ -125,10 +115,10 @@ img {
 }
 
 :deep(.van-tabs__nav) {
-  background-color: #e1264a;
+  background-color: #424246;
 
   .van-tab {
-    color: #ea8383;
+    color: #968e8e;
     font-size: 1.5rem;
     i {
       margin-right: 2rem;

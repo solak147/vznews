@@ -1,9 +1,6 @@
 <template>
   <section>
-    <van-row class="title">
-      <van-col span="4" @click="back"> <van-icon name="arrow-left" size="3rem" /></van-col>
-      <van-col span="20"> <h1>會員登入</h1></van-col>
-    </van-row>
+    <NavBar title="會員登入" />
 
     <van-form @submit="login" @failed="onFailed">
       <van-cell-group inset>
@@ -108,20 +105,9 @@ const login = async (values) => {
 const onFailed = (errorInfo) => {
   console.log('failed', errorInfo)
 }
-
-const back = () => {
-  history.back()
-}
 </script>
 
 <style lang="less" scoped>
-.title {
-  background-color: #e1264a;
-  color: #fff;
-  margin-bottom: 2.5rem;
-  padding: 1rem 1rem;
-}
-
 .van-cell-group {
   margin: 2rem;
 }

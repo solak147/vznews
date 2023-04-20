@@ -542,7 +542,7 @@ export default defineAppConfig({
     }
   ],
   price: [
-    { text: '5000以下', value: '5000' },
+    { text: '5000以下', value: '5000以下' },
     { text: '5001~1萬', value: '5001~1萬' },
     { text: '1萬~5萬', value: '1萬~5萬' },
     { text: '5萬~10萬', value: '5萬~10萬' },

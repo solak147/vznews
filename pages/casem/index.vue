@@ -4,10 +4,10 @@
 
     <van-search v-model="value" placeholder="请输入搜索关键词" />
 
-    <van-dropdown-menu @change="caseChg">
-      <van-dropdown-item v-model="caseVal" :options="caseOpt" />
-      <van-dropdown-item v-model="value2" :options="option2" />
-      <van-dropdown-item v-model="value3" :options="option3" />
+    <van-dropdown-menu>
+      <van-dropdown-item v-model="city" :options="cityOpt" @change="menuChg" />
+      <van-dropdown-item v-model="type" :options="typeOpt" @change="menuChg" />
+      <van-dropdown-item v-model="casePrice" :options="casePriceOpt" @change="menuChg" />
     </van-dropdown-menu>
 
     <van-row class="selTag" align="center">
@@ -54,6 +54,8 @@
 
 <script setup>
 const { $request } = useNuxtApp()
+const appConfig = useAppConfig()
+
 const props = defineProps({
   navActive: {
     type: Function
@@ -64,20 +66,19 @@ onMounted(() => {
   props.navActive(2)
 })
 
-const value2 = ref('a')
-const value3 = ref('a')
+// 地區
+const city = ref('')
+const { addressConfig } = appConfig
+const cityOpt = [{ text: '地區', value: '' }]
+addressConfig.forEach((city) => {
+  cityOpt.push({ text: city.text, value: city.text })
+})
 
-// menu case
-const caseVal = ref(0)
-const caseOpt = [
-  { text: '全部案件', value: '' },
-  { text: '一般案件', value: 'o' },
-  { text: '急件', value: 'i' }
-]
-
-const caseChg = async () => {
+const menuChg = async () => {
+  loading.value = true
+  from.value = 0
   const res = await $request(
-    `/case/get?from=${from.value}&size=${size.value}&kind=${kind.value}`,
+    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}`,
     'get'
   )
 
@@ -85,24 +86,28 @@ const caseChg = async () => {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   } else {
     list.value = []
-    list.value.push(res.data)
-    from.value += 10
+    if (res.data) {
+      res.data.forEach((e) => {
+        list.value.push(e)
+      })
+    }
   }
+  loading.value = false
 }
 
-const option2 = [
-  { text: '默认排序', value: 'a' },
-  { text: '好评排序', value: 'b' },
-  { text: '销量排序', value: 'c' }
-]
-const option3 = [
-  { text: '金額', value: 'a' },
-  { text: '好评排序', value: 'b' },
-  { text: '销量排序', value: 'c' }
-]
+// 案件類型：平面設計
+const type = ref('')
+const { caseType } = appConfig
+const typeOpt = Object.assign([], caseType)
+typeOpt.unshift({ text: '案件類別', value: '' })
+
+// 案件金額
+const casePrice = ref('')
+const { price } = appConfig
+const casePriceOpt = Object.assign([], price)
+casePriceOpt.unshift({ text: '案件金額', value: '' })
 
 const from = ref(0)
-const size = ref(30)
 const list = ref([])
 const loading = ref(false)
 const finished = ref(false)
@@ -112,15 +117,14 @@ const onLoad = async () => {
   loading.value = true
 
   // 异步更新数据
-  const res = await $request(
-    `/case/get?from=${from.value}&size=${size.value}&kind=${kind.value}`,
-    'get'
-  )
+  const res = await $request(`/case/get?from=${from.value}`, 'get')
 
   if (res.code === -1) {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   } else {
-    list.value.push(res.data)
+    res.data.forEach((e) => {
+      list.value.push(e)
+    })
     from.value += 10
   }
   loading.value = false
