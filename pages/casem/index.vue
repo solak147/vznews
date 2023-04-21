@@ -2,23 +2,36 @@
   <section>
     <NavBar title="案件瀏覽" />
 
-    <van-search v-model="value" placeholder="请输入搜索关键词" />
+    <van-search v-model="search" placeholder="請輸入搜索關鍵詞" @search="onSearch" />
 
     <van-dropdown-menu>
-      <van-dropdown-item v-model="city" :options="cityOpt" @change="menuChg" />
-      <van-dropdown-item v-model="type" :options="typeOpt" @change="menuChg" />
-      <van-dropdown-item v-model="casePrice" :options="casePriceOpt" @change="menuChg" />
+      <van-dropdown-item v-model="city" :options="cityOpt" @change="menuChg($event, 'city')" />
+      <van-dropdown-item v-model="type" :options="typeOpt" @change="menuChg($event, 'type')" />
+      <van-dropdown-item
+        v-model="casePrice"
+        :options="casePriceOpt"
+        @change="menuChg($event, 'price')"
+      />
     </van-dropdown-menu>
 
-    <van-row class="selTag" align="center">
-      <van-col span="3">已選擇</van-col>
+    <div class="selTag">
+      <div>
+        已選擇 :
 
-      <van-col span="18">
-        <van-tag type="primary" size="large" closeable round>标签</van-tag>
-      </van-col>
+        <van-tag
+          v-for="item in allTags"
+          v-show="item.value"
+          :key="item"
+          type="primary"
+          size="large"
+          closeable
+          round
+          >{{ item.value }}</van-tag
+        >
+      </div>
 
-      <van-col span="3"><a href="javascript:void(0)">清除全部</a></van-col>
-    </van-row>
+      <div><a href="javascript:void(0)">清除全部</a></div>
+    </div>
 
     <van-list
       v-model:loading="loading"
@@ -66,6 +79,35 @@ onMounted(() => {
   props.navActive(2)
 })
 
+// 搜索 bar
+const search = ref('')
+const onSearch = async (val) => {
+  loading.value = true
+  from.value = 0
+  const res = await $request(
+    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}&search=${val}`,
+    'get'
+  )
+
+  if (res.code === -1) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  } else {
+    list.value = []
+    if (res.data) {
+      res.data.forEach((e) => {
+        list.value.push(e)
+      })
+    }
+  }
+  loading.value = false
+}
+
+// 已選標籤
+const cityTags = ref('')
+const typeTags = ref('')
+const priceTags = ref('')
+const allTags = ref([cityTags, typeTags, priceTags])
+
 // 地區
 const city = ref('')
 const { addressConfig } = appConfig
@@ -74,11 +116,25 @@ addressConfig.forEach((city) => {
   cityOpt.push({ text: city.text, value: city.text })
 })
 
-const menuChg = async () => {
+const menuChg = async (sel, menu) => {
+  switch (menu) {
+    case 'city':
+      cityTags.value = sel
+      break
+
+    case 'type':
+      typeTags.value = sel
+      break
+
+    case 'price':
+      priceTags.value = sel
+      break
+  }
+
   loading.value = true
   from.value = 0
   const res = await $request(
-    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}`,
+    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}&search=${search.value}`,
     'get'
   )
 
@@ -170,13 +226,6 @@ a {
   text-decoration: underline;
 }
 
-.title {
-  background-color: #e1264a;
-  color: #fff;
-  margin-bottom: 2.5rem 0rem;
-  padding: 1rem 1rem;
-}
-
 .van-dropdown-menu {
   margin: 0.5rem;
 }
@@ -188,6 +237,14 @@ a {
 .selTag {
   margin: 0.5rem;
   font-size: 1.2rem;
+
+  div {
+    margin: 0.5rem;
+  }
+
+  .van-tag {
+    margin: 0.5rem;
+  }
 }
 
 label {
