@@ -3,14 +3,7 @@
     <section>
       <MoonBanner ref="moonBanner" />
 
-      <van-row align="center">
-        <van-col span="24">
-          <p>
-            超越接案軟體，Buddha
-            為用戶建構全新的接案型態與豐富的數位生活，成為用戶生活中不可或缺的平台。
-          </p></van-col
-        >
-      </van-row>
+      <MeteorDes />
 
       <Swiper
         :modules="[SwiperAutoplay, SwiperEffectCreative]"
@@ -70,83 +63,36 @@
         >
       </van-row>
 
+      <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
+
       <van-row justify="center">
         <van-col class="stepTitle" span="24"> <h1>尋找專業人才 幫您解決外包難題</h1></van-col>
       </van-row>
 
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="photo-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>平面設計</h3>
-        </van-col>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="newspaper-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8"> <h3>網頁設計</h3></van-col>
-      </van-row>
-
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="desktop-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>程式開發</h3>
-        </van-col>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="edit" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8"> <h3>翻譯寫作</h3></van-col>
-      </van-row>
-
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="shopping-cart-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>商攝娛樂</h3>
-        </van-col>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="video-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8"> <h3>影像製作</h3></van-col>
-      </van-row>
-
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="wap-home-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>空間設計</h3>
-        </van-col>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="flower-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8"> <h3>生活服務</h3></van-col>
-      </van-row>
-
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="cluster-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>活動企劃</h3>
-        </van-col>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="manager-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8"> <h3>專業顧問</h3></van-col>
-      </van-row>
-
-      <van-row>
-        <van-col span="4">
-          <van-icon class="stepIcon" name="setting-o" color="#ff0000" size="4rem"
-        /></van-col>
-        <van-col span="8">
-          <h3>資訊工程</h3>
-        </van-col>
-      </van-row>
+      <van-grid :column-num="2" direction="horizontal" icon-size="4.5rem">
+        <van-grid-item badge="99+" icon="photo-o" icon-color="#7146ff" text="平面設計">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="newspaper-o" icon-color="#7146ff" text="網頁設計">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="desktop-o" icon-color="#7146ff" text="程式開發">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="edit" icon-color="#7146ff" text="翻譯寫作">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="shopping-cart-o" icon-color="#7146ff" text="商攝娛樂">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="video-o" icon-color="#7146ff" text="影像製作">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="wap-home-o" icon-color="#7146ff" text="空間設計">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="flower-o" icon-color="#7146ff" text="生活服務">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="cluster-o" icon-color="#7146ff" text="活動企劃">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="manager-o" icon-color="#7146ff" text="專業顧問">
+        </van-grid-item>
+        <van-grid-item badge="99+" icon="setting-o" icon-color="#7146ff" text="資訊工程">
+        </van-grid-item>
+      </van-grid>
     </section>
   </div>
 </template>
@@ -184,11 +130,20 @@ const scroll = (event) => {
 }
 
 .stepIcon {
-  background-color: #ffc7e7;
-
   &-r {
     background-color: #ffc7e7;
     border-radius: 100px;
   }
+}
+
+:deep(.van-grid-item__content) {
+  border-right: 0.1rem solid #4f4e4e;
+  border-bottom: 0.1rem solid #4f4e4e;
+  background-color: transparent;
+}
+
+:deep(.van-grid-item__text) {
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 </style>
