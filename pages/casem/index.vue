@@ -39,7 +39,11 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" @click="navigateTo('/casem/1')">
+      <van-cell
+        v-for="item in list"
+        :key="item"
+        @click="navigateTo(`/casem/${item._source.case_id}`)"
+      >
         <template #title>
           <label>{{ item._source.title }}</label>
           <div class="subTitle">
@@ -68,6 +72,7 @@
 <script setup>
 const { $request } = useNuxtApp()
 const appConfig = useAppConfig()
+const { calTimeDiff } = useCommon()
 
 const props = defineProps({
   navActive: {
@@ -169,9 +174,6 @@ const loading = ref(false)
 const finished = ref(false)
 
 const onLoad = async () => {
-  // 加载状态结束
-  loading.value = true
-
   // 异步更新数据
   const res = await $request(`/case/get?from=${from.value}`, 'get')
 
@@ -185,39 +187,13 @@ const onLoad = async () => {
   }
   loading.value = false
 
-  finished.value = true
-  //   if (list.value.length >= 40) {
-  //     finished.value = true
-  //   }
-}
-
-const calTimeDiff = (dateString) => {
-  const now = new Date()
-  const date = new Date(dateString)
-  const diff = (now.getTime() - date.getTime()) / 1000 / 60
-
-  const lstUpdMin = Math.round(diff)
-  if (lstUpdMin < 60) {
-    return `${lstUpdMin}分鐘前 更新`
-  } else if (lstUpdMin >= 60 && lstUpdMin < 60 * 24) {
-    return `${Math.floor(lstUpdMin / 60)}小時前 更新`
-  } else if (lstUpdMin >= 60 * 24 && lstUpdMin <= 60 * 24 * 30) {
-    return `${Math.floor((lstUpdMin / 60) * 24)}天前 更新`
-  } else {
-    let day = date.getDate()
-    let month = date.getMonth()
-    const year = date.getFullYear()
-
-    if (day < 10) {
-      day = `0${day}`
-    }
-
-    if (month < 10) {
-      month = `0${month}`
-    }
-
-    return `${year}/${month}/${day} 更新`
+  if (list.value.length >= res.cnt) {
+    finished.value = true
   }
+
+  setTimeout(function () {
+    // 防止拉到底 db es 不同步瘋狂 request
+  }, 10000) // 3000 毫秒等于 3 秒钟
 }
 </script>
 
@@ -232,6 +208,7 @@ a {
 
 .van-list {
   margin: 0.5rem;
+  margin-bottom: 5rem;
 }
 
 .selTag {
