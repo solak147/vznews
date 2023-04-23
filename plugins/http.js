@@ -27,6 +27,8 @@ export default defineNuxtPlugin(() => {
                 message: '驗證已逾期，請重新登入',
                 theme: 'round-button'
               }).then(() => {
+                const token = useCookie('jwt-token')
+                token.value = null
                 navigateTo('/member/login')
               })
             }

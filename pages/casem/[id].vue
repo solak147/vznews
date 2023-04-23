@@ -106,7 +106,20 @@
         <van-col span="4">
           <img src="@/assets/images/line.png" />
         </van-col>
-        <van-col span="20">{{ casem.data.line }}</van-col>
+        <van-col span="20">
+          <div v-if="casem.data.line">
+            {{ casem.data.line }}
+          </div>
+          <div v-else>未提供</div>
+        </van-col>
+      </van-row>
+
+      <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
+
+      <van-row justify="center">
+        <van-col span="24" style="text-align: center">
+          <van-button type="danger">立即報價</van-button>
+        </van-col>
       </van-row>
     </div>
   </section>
@@ -145,7 +158,7 @@ const casem = reactive({
 
 onMounted(async () => {
   let res
-  if (token) {
+  if (token.value) {
     res = await $request(`/case/getDetailAuth/${id}`, 'get')
   } else {
     res = await $request(`/case/getDetail/${id}`, 'get')
@@ -160,7 +173,7 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="less" scope>
+<style lang="less" scoped>
 a {
   text-decoration: underline;
 }
@@ -248,5 +261,10 @@ ul {
   div {
     margin-top: 1rem;
   }
+}
+
+.van-button {
+  margin-top: 1rem;
+  margin-bottom: 5rem;
 }
 </style>
