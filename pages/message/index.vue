@@ -27,7 +27,7 @@
         </van-cell>
         <template #right>
           <van-button square type="danger" text="删除" class="r-list-btn" />
-          <van-button square type="primary" text="收藏" class="r-list-btn" />
+          <van-button square type="primary" text="收藏" class="r-list-btn" @click="send" />
         </template>
       </van-swipe-cell>
     </van-list>
@@ -35,6 +35,35 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
+
+let ws
+let username
+
+onMounted(() => {
+  connect()
+})
+
+const connect = () => {
+  username = userStore.account
+  ws = new WebSocket('ws://localhost:8080/ws')
+  ws.onopen = function () {
+    ws.send(username)
+    console.log('Connected')
+  }
+  ws.onmessage = function (event) {
+    console.log('Received message:', event.data)
+  }
+  ws.onclose = function (event) {
+    console.log('Disconnected:', event.code, event.reason)
+  }
+}
+
+function send() {
+  ws.send('aaa' + ' ' + 'bbb')
+}
+
 const text =
   'Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。Vant 是一个轻量、可定制的移动端组件库，于 2017 年开源。目前 Vant 官方提供了 Vue 2 版本、Vue 3 版本和微信小程序版本，并由社区团队维护 React 版本和支付宝小程序版本。'
 const list = ref([])

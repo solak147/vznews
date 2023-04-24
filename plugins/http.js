@@ -79,20 +79,46 @@ export default defineNuxtPlugin(() => {
         })
 
         return returnData
+      },
+
+      download: async (filename) => {
+        try {
+          const token = useCookie('jwt-token')
+
+          // 將要傳遞的參數轉換為 URLSearchParams 物件
+          const params = new URLSearchParams()
+          params.append('filename', filename)
+
+          // 發送 GET 請求至 Golang 伺服器下載檔案
+          const response = await fetch(
+            `http://<golang-server-address>/download?${params.toString()}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token.value}`
+              }
+            }
+          )
+
+          // 將回傳的二進位檔案轉換為 Blob 物件
+          const blob = await response.blob()
+
+          // 建立暫存的 URL 以供下載使用
+          const url = URL.createObjectURL(blob)
+
+          // 創建一個新的 <a> 元素並設置下載屬性，然後觸發點擊事件下載檔案
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', filename)
+          document.body.appendChild(link)
+          link.click()
+          link.remove()
+
+          // 釋放暫存的 URL
+          URL.revokeObjectURL(url)
+        } catch (error) {
+          console.error(error)
+        }
       }
-
-      // upload: (files) => {
-      //   const { $axios } = useFetch()
-      //   const formData = new FormData()
-
-      //   for (let i = 0; i < files.length; i++) {
-      //     formData.append('files[]', files[i])
-      //   }
-
-      //   $axios.post('/file/upload', formData).then((res) => {
-      //     console.log('upload response:', res.data)
-      //   })
-      // }
     }
   }
 })

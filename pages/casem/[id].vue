@@ -43,7 +43,11 @@
       <li>
         <h4>參考附件</h4>
         <div v-for="item in files.data" :key="item.filename" class="files">
-          <a href="#">{{ item.filename }}</a>
+          <a
+            href="javascript:void(0)"
+            @click="$request(`/file/download/${item.filename}`, 'get')"
+            >{{ item.filename }}</a
+          >
         </div>
       </li>
     </ul>
