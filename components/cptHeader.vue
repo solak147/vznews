@@ -11,6 +11,7 @@
       <van-tabbar-item icon="edit">發案</van-tabbar-item>
       <van-tabbar-item icon="search">接案</van-tabbar-item>
       <van-tabbar-item icon="friends-o">會員</van-tabbar-item>
+      <van-tabbar-item icon="chat-o">訊息</van-tabbar-item>
     </van-tabbar>
   </header>
 </template>
@@ -47,6 +48,9 @@ const navChg = (index) => {
         navigateTo('/member/login')
       }
 
+      break
+    case 4:
+      navigateTo('/message')
       break
   }
 }
