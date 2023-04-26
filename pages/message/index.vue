@@ -19,10 +19,8 @@
             />
           </template>
           <template #title>
-            <label>{{
-              item.accountFrom === userStore.account ? item.accountFrom : item.accountTo
-            }}</label>
-            <span>{{ calTimeDiff(item.created_at) }}</span>
+            <label>{{ item.account }}</label>
+            <span>{{ calTimeDiff(item.crtDte) }}</span>
           </template>
           <template #label>
             <van-text-ellipsis rows="2" :content="item.message" />
@@ -66,7 +64,7 @@ onMounted(() => {
 })
 
 const connect = () => {
-  username = useUserStore.account
+  username = userStore.account
   ws = new WebSocket('ws://localhost:8080/ws')
   ws.onopen = function () {
     ws.send(username)
@@ -103,10 +101,6 @@ const onLoad = async () => {
   }
   loading.value = false
   finished.value = true
-  // 数据全部加载完成
-  // if (list.value.length >= 40) {
-  //   finished.value = true
-  // }
 }
 </script>
 
