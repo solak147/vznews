@@ -18,6 +18,7 @@
         </van-cell>
         <van-cell v-else>
           <van-space class="msg-right">
+            <span>{{ calTimeDiffGrp(item.created_at) }}</span>
             <div class="speech-bubble">{{ item.message }}</div>
           </van-space>
         </van-cell>
@@ -41,6 +42,7 @@ const userStore = useUserStore()
 const runtimeConfig = useRuntimeConfig()
 const { socket } = runtimeConfig.public
 const { $request } = useNuxtApp()
+const { calTimeDiffGrp } = useCommon()
 const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
@@ -65,7 +67,12 @@ const connect = () => {
     console.log('Connected')
   }
   ws.onmessage = function (event) {
-    console.log('Received message:', event.data)
+    list.data.push({
+      accountFrom: id,
+      accountTo: userStore.account,
+      message: event.data,
+      created_at: new Date()
+    })
   }
   ws.onclose = function (event) {
     console.log('Disconnected:', event.code, event.reason)
@@ -114,7 +121,12 @@ const submit = async (values) => {
     return
   }
 
-  list.data.push({ messageFrom: userStore.account, messageTo: id, message: msg.value })
+  list.data.push({
+    accountFrom: userStore.account,
+    accountTo: id,
+    message: msg.value,
+    created_at: new Date()
+  })
 
   setTimeout(() => {
     listEle.scrollTop = listEle.scrollHeight
@@ -134,7 +146,7 @@ const submit = async (values) => {
   border-radius: 0.4em;
 
   max-width: 30rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0.7rem 0.8rem;
   margin-top: 0.5rem;
   margin-right: 1rem;
   text-align: center;
@@ -165,7 +177,7 @@ const submit = async (values) => {
   border-radius: 0.4em;
 
   max-width: 30rem;
-  padding: 0.5rem 0.5rem;
+  padding: 0.7rem 0.8rem;
   margin-top: 0.5rem;
   margin-left: 1rem;
   text-align: center;
@@ -191,6 +203,10 @@ const submit = async (values) => {
 
 .msg-right {
   float: right;
+
+  span {
+    margin-top: 1.7rem;
+  }
 }
 
 .msg-left {

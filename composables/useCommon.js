@@ -28,6 +28,42 @@ export default function () {
     }
   }
 
+  let lastTime
+  const calTimeDiffGrp = (dateString) => {
+    const now = new Date()
+    const date = new Date(dateString)
+    const diff = (now.getTime() - date.getTime()) / 1000 / 60
+
+    const lstUpdMin = Math.round(diff)
+
+    if (lastTime === lstUpdMin || lstUpdMin < 1) {
+      return
+    }
+    lastTime = lstUpdMin
+
+    if (lstUpdMin < 60) {
+      return `${lstUpdMin}分鐘前`
+    } else if (lstUpdMin >= 60 && lstUpdMin < 60 * 24) {
+      return `${Math.floor(lstUpdMin / 60)}小時前`
+    } else if (lstUpdMin >= 60 * 24 && lstUpdMin <= 60 * 24 * 30) {
+      return `${Math.floor(lstUpdMin / (60 * 24))}天前`
+    } else {
+      let day = date.getDate()
+      let month = date.getMonth()
+      const year = date.getFullYear()
+
+      if (day < 10) {
+        day = `0${day}`
+      }
+
+      if (month < 10) {
+        month = `0${month}`
+      }
+
+      return `${year}/${month}/${day}`
+    }
+  }
+
   const transContactTime = (strTime) => {
     const timeArr = strTime.split(',')
     if (timeArr.length === 0) {
@@ -56,6 +92,7 @@ export default function () {
 
   return {
     calTimeDiff,
+    calTimeDiffGrp,
     transContactTime
   }
 }
