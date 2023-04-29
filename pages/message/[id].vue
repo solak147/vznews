@@ -1,33 +1,130 @@
 <template>
   <section>
-    <NavBar title="x先生" />
+    <NavBar :title="id" />
 
-    <div class="msg-div">
-      <van-space class="msg-right">
-        <div class="speech-bubble">i am text</div>
-        <van-image
-          round
-          width="4rem"
-          height="4rem"
-          src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-        />
-      </van-space>
-    </div>
+    <van-list id="list" v-model:loading="loading" :finished="finished" @load="onLoad">
+      <template v-for="item in list.data" :key="item">
+        <van-cell v-if="item.accountFrom === id">
+          <van-space class="msg-left">
+            <van-image
+              round
+              width="4rem"
+              height="4rem"
+              src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+              class="img-left"
+            />
+            <div class="b-f">{{ item.message }}</div>
+          </van-space>
+        </van-cell>
+        <van-cell v-else>
+          <van-space class="msg-right">
+            <div class="speech-bubble">{{ item.message }}</div>
+          </van-space>
+        </van-cell>
+      </template>
+    </van-list>
 
-    <div class="msg-div">
-      <van-space class="msg-left">
-        <van-image
-          round
-          width="4rem"
-          height="4rem"
-          src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-          class="img-left"
-        />
-        <div class="b-f">i am text</div>
-      </van-space>
-    </div>
+    <van-form class="send" @submit="submit" @failed="onFailed">
+      <van-field v-model="msg" name="message" autocomplete="off" center placeholder="輸入訊息">
+        <template #button>
+          <van-button size="small" type="primary" native-type="submit">發送</van-button>
+        </template>
+      </van-field>
+    </van-form>
   </section>
 </template>
+
+<script setup>
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const runtimeConfig = useRuntimeConfig()
+const { socket } = runtimeConfig.public
+const { $request } = useNuxtApp()
+const token = useCookie('jwt-token')
+const route = useRoute()
+const { id } = route.params
+let listEle // 用來控制 scroll
+
+onMounted(() => {
+  connect()
+
+  listEle = document.getElementById('list')
+
+  setTimeout(() => {
+    listEle.scrollTop = listEle.scrollHeight
+  }, 100)
+})
+
+let ws
+const connect = () => {
+  ws = new WebSocket(socket)
+
+  ws.onopen = function () {
+    ws.send(token.value)
+    console.log('Connected')
+  }
+  ws.onmessage = function (event) {
+    console.log('Received message:', event.data)
+  }
+  ws.onclose = function (event) {
+    console.log('Disconnected:', event.code, event.reason)
+  }
+}
+
+const sendWs = () => {
+  ws.send(id + ' ' + msg.value)
+}
+
+const list = reactive({ data: [] })
+const loading = ref(false)
+const finished = ref(false)
+
+const onLoad = async () => {
+  // 异步更新数据
+  loading.value = true
+  const res = await $request(`/message/${id}`, 'get')
+
+  if (res.code === 0) {
+    list.data = res.data
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+
+  loading.value = false
+  finished.value = true
+}
+
+const msg = ref('')
+const submit = async (values) => {
+  if (!msg.value) {
+    return
+  }
+
+  const res = await $request(`/message/send`, 'post', {
+    ...values,
+    accountTo: id
+  })
+
+  if (res.code !== 0) {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+    return
+  }
+
+  list.data.push({ messageFrom: userStore.account, messageTo: id, message: msg.value })
+
+  setTimeout(() => {
+    listEle.scrollTop = listEle.scrollHeight
+  }, 100)
+
+  sendWs()
+
+  msg.value = ''
+}
+</script>
 
 <style lang="less" scoped>
 .speech-bubble {
@@ -37,9 +134,9 @@
   border-radius: 0.4em;
 
   max-width: 30rem;
-  padding: 1.4rem 1rem;
-  margin-top: 5rem;
-  margin-right: 2rem;
+  padding: 0.5rem 0.5rem;
+  margin-top: 0.5rem;
+  margin-right: 1rem;
   text-align: center;
   color: black;
   font-size: 1.5rem;
@@ -68,9 +165,9 @@
   border-radius: 0.4em;
 
   max-width: 30rem;
-  padding: 1.4rem 1rem;
-  margin-top: 5rem;
-  margin-left: 2rem;
+  padding: 0.5rem 0.5rem;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
   text-align: center;
   color: black;
   font-size: 1.5rem;
@@ -94,24 +191,34 @@
 
 .msg-right {
   float: right;
-
-  .van-image {
-    margin-right: 3rem;
-    margin-top: 3rem;
-  }
 }
 
 .msg-left {
   float: left;
 
   .van-image {
-    margin-left: 3rem;
-    margin-top: 3rem;
+    margin-left: 1rem;
   }
 }
 
 .msg-div {
   height: 8rem;
   width: 100vw;
+}
+
+.van-form {
+  width: 100vw;
+}
+
+.send {
+  position: fixed;
+  bottom: 4.5rem;
+}
+
+.van-list {
+  height: 79.5vh;
+  width: 100vw;
+  overflow: scroll;
+  display: inline-block;
 }
 </style>

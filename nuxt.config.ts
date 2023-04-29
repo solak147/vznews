@@ -10,6 +10,12 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      socket: 'ws://localhost:8080/ws'
+    }
+  },
+
   modules: ['@vant/nuxt', 'nuxt-swiper', '@pinia/nuxt'],
 
   // 全域 CSS

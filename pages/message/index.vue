@@ -9,7 +9,7 @@
       @load="onLoad"
     >
       <van-swipe-cell v-for="item in list.data" :key="item">
-        <van-cell @click="navigateTo('/casem/1')">
+        <van-cell @click="navigateTo(`/message/${item.account}`)">
           <template #icon>
             <van-image
               round
@@ -24,7 +24,9 @@
           </template>
           <template #label>
             <van-text-ellipsis rows="2" :content="item.message" />
-            <van-tag round type="success" size="large" text-color="#fff">99+</van-tag>
+            <van-tag v-if="item.notReadCnt" round type="success" size="large" text-color="#fff"
+              >{{ item.notReadCnt }}+</van-tag
+            >
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
           </template>
         </van-cell>
@@ -42,10 +44,11 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/stores/user'
+const runtimeConfig = useRuntimeConfig()
+const { socket } = runtimeConfig.public
 const { calTimeDiff } = useCommon()
-const userStore = useUserStore()
 const { $request } = useNuxtApp()
+const token = useCookie('jwt-token')
 
 const props = defineProps({
   navActive: {
@@ -54,24 +57,25 @@ const props = defineProps({
 })
 
 let ws
-let username
 // const tt = ref('')
 // const gg = ref('')
 
 onMounted(() => {
   props.navActive(4)
-  connect()
+
+  if (process.client) {
+    connect()
+  }
 })
 
 const connect = () => {
-  username = userStore.account
-  ws = new WebSocket('ws://localhost:8080/ws')
+  ws = new WebSocket(socket)
+
   ws.onopen = function () {
-    ws.send(username)
+    ws.send(token.value)
     console.log('Connected')
   }
   ws.onmessage = function (event) {
-    alert(event.data)
     console.log('Received message:', event.data)
   }
   ws.onclose = function (event) {
