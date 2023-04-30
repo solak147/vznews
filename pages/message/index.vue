@@ -9,7 +9,7 @@
       @load="onLoad"
     >
       <van-swipe-cell v-for="item in list.data" :key="item">
-        <van-cell @click="navigateTo(`/message/${item.account}`)">
+        <van-cell @click="clickDetail(item.account)">
           <template #icon>
             <van-image
               round
@@ -85,6 +85,18 @@ const onLoad = async () => {
   }
   loading.value = false
   finished.value = true
+}
+
+const clickDetail = async (from) => {
+  const res = await $request('/message/updateRead', 'put', {
+    accountFrom: from
+  })
+
+  if (res.code !== 0) {
+    showNotify({ type: 'warning', message: '資料更更新失敗' })
+  }
+
+  navigateTo(`/message/${from}`)
 }
 </script>
 

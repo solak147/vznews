@@ -303,7 +303,7 @@ const next = () => {
 
 <style lang="less" scoped>
 label {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin: 1rem;
   span {
     color: red;

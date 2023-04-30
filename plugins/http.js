@@ -23,12 +23,14 @@ export default defineNuxtPlugin(() => {
           onResponse({ request, response, options }) {
             // -2:jwt驗證未通過
             if (response._data.code === -2) {
+              // 需寫在驗證button前，不然socket逾期 token也逾期，socket 會一直重連
+              const token = useCookie('jwt-token')
+              token.value = null
+
               showDialog({
                 message: '驗證已逾期，請重新登入',
                 theme: 'round-button'
               }).then(() => {
-                const token = useCookie('jwt-token')
-                token.value = null
                 navigateTo('/member/login')
               })
             }

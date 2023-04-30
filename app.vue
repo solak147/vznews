@@ -45,7 +45,9 @@ const connect = () => {
 
   ws.onclose = function (event) {
     console.log('Disconnected:', event.code, event.reason)
-    setTimeout(connect, 5000)
+    if (token.value) {
+      setTimeout(connect, 5000)
+    }
   }
 }
 

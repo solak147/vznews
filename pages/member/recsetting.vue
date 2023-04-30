@@ -7,14 +7,10 @@
         <div class="list">
           <label><span> * </span>接案狀態 :</label>
           <van-radio-group v-model="openChk">
-            <van-radio name="1"
-              >開啟，顯示聯絡資訊 (全站案主皆能查看您的聯絡資訊，主動與您聯繫。)</van-radio
-            >
-            <van-radio name="2">
-              開啟，隱藏聯絡資訊
-              (僅開放成交過的業主查看您的聯絡資訊，其他案主胥發送邀請函)</van-radio
-            >
-            <van-radio name="3">關閉</van-radio>
+            <van-space direction="vertical" size="0">
+              <van-radio name="1">開啟，顯示聯絡資訊 (全站案主皆能查看您的聯絡資訊)</van-radio>
+              <van-radio name="2">關閉</van-radio>
+            </van-space>
           </van-radio-group>
         </div>
 
@@ -28,7 +24,7 @@
               style="width: 10rem"
               :rules="[{ pattern: namePtn, message: '請輸入正確格式' }]"
             />
-            <span>此為您對外公開顯示名稱</span>
+            <span class="pubName">此為您對外公開顯示名稱</span>
           </van-space>
         </div>
 
@@ -47,7 +43,9 @@
             </van-space>
           </van-radio-group>
         </div>
+      </van-cell-group>
 
+      <van-cell-group inset>
         <van-field
           v-model="phone"
           name="phone"
@@ -91,7 +89,9 @@
           placeholder="帳號為您的 E-mail"
           :rules="[{ pattern: emailPtn, message: 'e-mail 格式錯誤' }]"
         />
+      </van-cell-group>
 
+      <van-cell-group inset>
         <van-field
           v-model="addressTxt"
           is-link
@@ -231,22 +231,29 @@ const workContent = ref('')
   margin: 1rem;
 }
 
-label {
-  font-size: 1.2rem;
+:deep(label) {
+  font-size: 1.3rem;
   span {
     color: red;
   }
 }
+
+.van-cell-group {
+  margin: 1rem;
+  padding: 1rem;
+}
+
 .van-radio-group {
   margin: 0.5rem;
   .van-radio {
     margin: 0.5rem;
+    font-size: 1.3rem;
   }
 }
 
 .role {
   .van-radio {
-    width: 8rem;
+    width: 9rem;
   }
 }
 
@@ -254,5 +261,10 @@ label {
   width: 10rem;
   margin-top: 1rem;
   margin-bottom: 5rem;
+}
+
+.pubName {
+  color: #969799;
+  font-size: 1.3rem;
 }
 </style>
