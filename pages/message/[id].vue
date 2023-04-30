@@ -39,49 +39,39 @@
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
-const runtimeConfig = useRuntimeConfig()
-const { socket } = runtimeConfig.public
 const { $request } = useNuxtApp()
 const { calTimeDiffGrp } = useCommon()
-const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
 let listEle // 用來控制 scroll
 
-onMounted(() => {
-  connect()
+const props = defineProps({
+  sendMsgObj: {
+    type: Object
+  },
+  sendWs: {
+    type: Function
+  }
+})
 
+watch(props.sendMsgObj, () => {
+  if (props.sendMsgObj.data.from === id) {
+    list.data.push({
+      accountFrom: id,
+      accountTo: userStore.account,
+      message: props.sendMsgObj.data.message,
+      created_at: new Date()
+    })
+  }
+})
+
+onMounted(() => {
   listEle = document.getElementById('list')
 
   setTimeout(() => {
     listEle.scrollTop = listEle.scrollHeight
   }, 100)
 })
-
-let ws
-const connect = () => {
-  ws = new WebSocket(socket)
-
-  ws.onopen = function () {
-    ws.send(token.value)
-    console.log('Connected')
-  }
-  ws.onmessage = function (event) {
-    list.data.push({
-      accountFrom: id,
-      accountTo: userStore.account,
-      message: event.data,
-      created_at: new Date()
-    })
-  }
-  ws.onclose = function (event) {
-    console.log('Disconnected:', event.code, event.reason)
-  }
-}
-
-const sendWs = () => {
-  ws.send(id + ' ' + msg.value)
-}
 
 const list = reactive({ data: [] })
 const loading = ref(false)
@@ -132,7 +122,7 @@ const submit = async (values) => {
     listEle.scrollTop = listEle.scrollHeight
   }, 100)
 
-  sendWs()
+  props.sendWs(id, msg.value)
 
   msg.value = ''
 }

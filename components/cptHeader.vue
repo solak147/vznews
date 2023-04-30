@@ -11,14 +11,40 @@
       <van-tabbar-item icon="edit">發案</van-tabbar-item>
       <van-tabbar-item icon="search">接案</van-tabbar-item>
       <van-tabbar-item icon="friends-o">會員</van-tabbar-item>
-      <van-tabbar-item icon="chat-o">訊息</van-tabbar-item>
+      <van-tabbar-item icon="chat-o" :badge="badge">訊息</van-tabbar-item>
     </van-tabbar>
   </header>
 </template>
 
 <script setup>
-const active = ref(0)
+const { $request } = useNuxtApp()
+const token = useCookie('jwt-token')
+const props = defineProps({
+  sendMsgObj: {
+    type: Object
+  }
+})
 
+const badge = ref('')
+watch(props.sendMsgObj, () => {
+  badge.value = parseInt(badge.value) + 1
+})
+
+onMounted(async () => {
+  if (token.value) {
+    const res = await $request(`/message/chkNoRead`, 'get')
+
+    if (res.code === 0) {
+      if (res.data > 0) {
+        badge.value = res.data
+      }
+    } else {
+      showNotify({ type: 'warning', message: '資料獲取失敗' })
+    }
+  }
+})
+
+const active = ref(0)
 const navActiveFn = (index) => {
   active.value = index
 }
@@ -59,5 +85,9 @@ const navChg = (index) => {
 <style lang="less" scoped>
 .headerNav {
   background: #e1264a;
+}
+
+:deep(.van-badge) {
+  background-color: #1900ff;
 }
 </style>

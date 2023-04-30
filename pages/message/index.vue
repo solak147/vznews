@@ -32,60 +32,40 @@
         </van-cell>
         <template #right>
           <van-button square type="danger" text="删除" class="r-list-btn" />
-          <van-button square type="primary" text="收藏" class="r-list-btn" @click="send" />
+          <van-button square type="primary" text="收藏" class="r-list-btn" />
         </template>
       </van-swipe-cell>
     </van-list>
-
-    <!-- <input v-model="tt" />
-    <input v-model="gg" />
-    <button @click="connect">test socket</button> -->
   </section>
 </template>
 
 <script setup>
-const runtimeConfig = useRuntimeConfig()
-const { socket } = runtimeConfig.public
 const { calTimeDiff } = useCommon()
 const { $request } = useNuxtApp()
-const token = useCookie('jwt-token')
 
 const props = defineProps({
   navActive: {
     type: Function
+  },
+  sendMsgObj: {
+    type: Object
   }
 })
 
-let ws
-// const tt = ref('')
-// const gg = ref('')
+// 接收websocket訊息挪至陣列最前方
+watch(props.sendMsgObj, () => {
+  const from = props.sendMsgObj.data.from
+  const index = list.data.findIndex((item) => item.account.includes(from))
+  const removeEle = list.data.splice(index, 1)[0]
+  removeEle.notReadCnt = parseInt(removeEle.notReadCnt) + 1
+  removeEle.message = props.sendMsgObj.data.message
+  removeEle.crtDte = new Date()
+  list.data.unshift(removeEle)
+})
 
 onMounted(() => {
   props.navActive(4)
-
-  if (process.client) {
-    connect()
-  }
 })
-
-const connect = () => {
-  ws = new WebSocket(socket)
-
-  ws.onopen = function () {
-    ws.send(token.value)
-    console.log('Connected')
-  }
-  ws.onmessage = function (event) {
-    console.log('Received message:', event.data)
-  }
-  ws.onclose = function (event) {
-    console.log('Disconnected:', event.code, event.reason)
-  }
-}
-
-function send() {
-  ws.send(gg.value + ' ' + 'bbb')
-}
 
 const list = reactive({
   data: []
