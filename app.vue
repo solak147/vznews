@@ -18,9 +18,9 @@ import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 const runtimeConfig = useRuntimeConfig()
 const { socket } = runtimeConfig.public
-const token = useCookie('jwt-token')
 
 onMounted(() => {
+  const token = useCookie('jwt-token')
   if (token.value) {
     connect()
   }
@@ -33,6 +33,7 @@ const connect = () => {
 
   ws.onopen = function () {
     console.log('Connected')
+    const token = useCookie('jwt-token')
     ws.send(token.value)
   }
 
@@ -45,6 +46,9 @@ const connect = () => {
 
   ws.onclose = function (event) {
     console.log('Disconnected:', event.code, event.reason)
+
+    // 必須寫在 onclose 內，每次 token 都必須重新取
+    const token = useCookie('jwt-token')
     if (token.value) {
       setTimeout(connect, 5000)
     }

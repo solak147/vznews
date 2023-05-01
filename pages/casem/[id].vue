@@ -120,10 +120,11 @@
 
       <van-row justify="center">
         <van-col span="24" style="text-align: center">
-          <van-button type="danger">立即報價</van-button>
+          <van-button type="danger" @click="clickQuote">立即報價</van-button>
         </van-col>
       </van-row>
     </div>
+    <QuoteCase ref="quoteCase"></QuoteCase>
   </section>
 </template>
 
@@ -137,6 +138,7 @@ const { id } = route.params
 const files = reactive({ data: [] })
 const casem = reactive({
   data: {
+    caseId: '',
     title: '',
     type: '',
     kind: '',
@@ -173,6 +175,12 @@ onMounted(async () => {
     files.data = res.files
   }
 })
+
+// 報價
+const quoteCase = ref(null)
+const clickQuote = () => {
+  quoteCase.value?.showQuote(casem)
+}
 </script>
 
 <style lang="less" scoped>
