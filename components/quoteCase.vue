@@ -53,10 +53,13 @@ const isComfirmBtn = ref(false)
 const isQuote = ref(false)
 const title = ref('')
 const caseId = ref('')
+const account = ref('') // 案主
+
 const showQuote = (casem) => {
   isQuote.value = true
   title.value = casem.data.title
   caseId.value = casem.data.caseId
+  account.value = casem.data.account
 }
 
 const pricePtn = /^\d+$/
@@ -86,6 +89,7 @@ const confirm = async () => {
 
   if (res.code === 0) {
     showNotify({ type: 'success', message: '報價成功' })
+    navigateTo(`/message/${account.value}`)
   } else {
     showDialog({
       message: res.msg,

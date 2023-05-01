@@ -139,6 +139,7 @@ const files = reactive({ data: [] })
 const casem = reactive({
   data: {
     caseId: '',
+    account: '',
     title: '',
     type: '',
     kind: '',
