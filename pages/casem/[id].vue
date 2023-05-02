@@ -56,7 +56,11 @@
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
 
     <van-row v-if="!token" class="boss">
-      <van-col span="24">您尚未登入，請先<a href="#">登入</a></van-col>
+      <van-col span="24"
+        >您尚未登入，請先<a href="javascript:void(0)" @click="navigateTo('/member/login')"
+          >登入</a
+        ></van-col
+      >
       <van-col span="24"><van-button type="danger">免費註冊</van-button></van-col>
     </van-row>
 
@@ -135,6 +139,7 @@ const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
 
+const isVip = ref(false)
 const files = reactive({ data: [] })
 const casem = reactive({
   data: {
@@ -174,12 +179,22 @@ onMounted(async () => {
   } else {
     casem.data = res.data
     files.data = res.files
+    isVip.value = res.isVip
   }
 })
 
 // 報價
 const quoteCase = ref(null)
 const clickQuote = () => {
+  if (!isVip.value) {
+    showDialog({
+      message: '請先購買vip才能使用此功能',
+      theme: 'round-button'
+    }).then(() => {
+      navigateTo('/deposit')
+    })
+    return false
+  }
   quoteCase.value?.showQuote(casem)
 }
 </script>

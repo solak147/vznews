@@ -81,6 +81,7 @@ const confirm = async () => {
   isQuote.value = false
 
   const res = await $request(`/case/quote`, 'post', {
+    title: title.value,
     caseId: caseId.value,
     priceS: parseInt(priceS.value),
     priceE: parseInt(priceE.value),

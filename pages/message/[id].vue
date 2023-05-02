@@ -4,7 +4,44 @@
 
     <van-list id="list" v-model:loading="loading" :finished="finished" @load="onLoad">
       <template v-for="item in list.data" :key="item">
-        <van-cell v-if="item.accountFrom === id">
+        <van-cell v-if="item.isSystem === '1'">
+          <div class="quoteTag" :class="{ quoteRigth: item.accountFrom === userStore.account }">
+            <div><label>報價通知</label></div>
+            <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
+            <div>
+              報價案件 :
+              <span
+                ><a
+                  href="javascript:void(0)"
+                  @click="navigateTo(`/casem/${item.message.split('-=')[0]}`)"
+                  >{{ item.message.split('-=')[1] }}</a
+                ></span
+              >
+            </div>
+            <div>
+              報價金額 :
+              <span style="color: red">{{
+                `$${item.message.split('-=')[2]} ~ $${item.message.split('-=')[3]}`
+              }}</span>
+            </div>
+            <div>
+              執行時間 : <span>{{ item.message.split('-=')[4] }}天</span>
+            </div>
+            <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
+            <div class="quoteFooter">
+              <a href="javascript:void(0)">查看接案方資訊</a>
+              <van-button
+                v-if="item.accountFrom === id"
+                type="primary"
+                native-type="button"
+                @click="cancle"
+                >確定成交</van-button
+              >
+            </div>
+          </div>
+        </van-cell>
+
+        <van-cell v-else-if="item.accountFrom === id">
           <van-space class="msg-left">
             <van-image
               round
@@ -226,5 +263,40 @@ const submit = async (values) => {
   width: 100vw;
   overflow: scroll;
   display: inline-block;
+}
+
+a {
+  text-decoration: underline;
+}
+
+.quoteTag {
+  width: 22rem;
+  height: 25rem;
+  background-color: #f10c101d;
+  font-size: 1.5rem;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 2rem;
+
+  div {
+    margin: 1rem;
+    float: left;
+    span {
+      font-weight: bold;
+    }
+  }
+}
+
+.quoteFooter {
+  display: flex;
+  align-items: center;
+
+  .van-button {
+    margin-left: 2rem;
+  }
+}
+
+.quoteRigth {
+  float: right;
 }
 </style>

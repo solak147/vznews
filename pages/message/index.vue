@@ -24,7 +24,12 @@
           </template>
           <template #label>
             <van-text-ellipsis rows="2" :content="item.message" />
-            <van-tag v-if="item.notReadCnt" round type="success" size="large" text-color="#fff"
+            <van-tag
+              v-if="parseInt(item.notReadCnt) > 0"
+              round
+              type="success"
+              size="large"
+              text-color="#fff"
               >{{ item.notReadCnt }}+</van-tag
             >
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
