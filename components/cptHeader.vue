@@ -18,7 +18,6 @@
 
 <script setup>
 const { $request } = useNuxtApp()
-const token = useCookie('jwt-token')
 const props = defineProps({
   sendMsgObj: {
     type: Object
@@ -30,28 +29,10 @@ watch(props.sendMsgObj, () => {
   badge.value = parseInt(badge.value) + 1
 })
 
-onMounted(async () => {
-  if (token.value) {
-    const res = await $request(`/message/chkNoRead`, 'get')
-
-    if (res.code === 0) {
-      if (res.data > 0) {
-        badge.value = res.data
-      }
-    } else {
-      showNotify({ type: 'warning', message: '資料獲取失敗' })
-    }
-  }
-})
-
 const active = ref(0)
 const navActiveFn = (index) => {
   active.value = index
 }
-
-defineExpose({
-  navActiveFn
-})
 
 const navChg = (index) => {
   const token = useCookie('jwt-token')
@@ -80,6 +61,26 @@ const navChg = (index) => {
       break
   }
 }
+
+const refreshBadge = async () => {
+  const token = useCookie('jwt-token')
+  if (token.value) {
+    const res = await $request(`/message/chkNoRead`, 'get')
+
+    if (res.code === 0) {
+      if (res.data > 0) {
+        badge.value = res.data
+      }
+    } else {
+      showNotify({ type: 'warning', message: '資料獲取失敗' })
+    }
+  }
+}
+
+defineExpose({
+  navActiveFn,
+  refreshBadge
+})
 </script>
 
 <style lang="less" scoped>

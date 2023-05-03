@@ -23,7 +23,10 @@
             <span>{{ calTimeDiff(item.crtDte) }}</span>
           </template>
           <template #label>
-            <van-text-ellipsis rows="2" :content="item.message" />
+            <van-text-ellipsis v-if="item.isSystem === '0'" rows="2" :content="item.message" />
+            <div v-else-if="item.isSystem === '1'">系統訊息：報價通知</div>
+            <div v-else-if="item.isSystem === '2'">系統訊息：成交通知</div>
+
             <van-tag
               v-if="parseInt(item.notReadCnt) > 0"
               round

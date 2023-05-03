@@ -4,7 +4,41 @@
 
     <van-list id="list" v-model:loading="loading" :finished="finished" @load="onLoad">
       <template v-for="item in list.data" :key="item">
-        <van-cell v-if="item.isSystem === '1'">
+        <!-- 系統訊息:成交 -->
+        <van-cell v-if="item.isSystem === '2'">
+          <div class="dealTag" :class="{ quoteRigth: item.accountFrom === userStore.account }">
+            <div><label>您成交了一筆案件</label></div>
+            <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
+            <div class="dealTitle">
+              {{ item.message.split('-=')[1] }}
+            </div>
+            <div>
+              案件預算 :
+              <span style="color: red">{{
+                `$${item.message.split('-=')[2]} ~ $${item.message.split('-=')[3]}`
+              }}</span>
+            </div>
+            <div>
+              聯絡人 : <span> todo </span>
+              <!-- todo 改為使用者設定姓名 -->
+            </div>
+            <div>連絡信箱 : <span>todo</span></div>
+            <div>
+              成交日期 : <span>{{ item.created_at.substring(0, 10) }}</span>
+            </div>
+            <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
+            <div class="dealFooter">
+              <a
+                href="javascript:void(0)"
+                @click="navigateTo(`/casem/${item.message.split('-=')[0]}`)"
+                >查看案件</a
+              >
+            </div>
+          </div>
+        </van-cell>
+
+        <!-- 系統訊息:報價 -->
+        <van-cell v-else-if="item.isSystem === '1'">
           <div class="quoteTag" :class="{ quoteRigth: item.accountFrom === userStore.account }">
             <div><label>報價通知</label></div>
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
@@ -30,17 +64,20 @@
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
             <div class="quoteFooter">
               <a href="javascript:void(0)">查看接案方資訊</a>
+
+              <!-- 案主才顯示 -->
               <van-button
                 v-if="item.accountFrom === id"
                 type="primary"
                 native-type="button"
-                @click="cancle"
+                @click="clickDeal(item.message, id)"
                 >確定成交</van-button
               >
             </div>
           </div>
         </van-cell>
 
+        <!-- 對方 -->
         <van-cell v-else-if="item.accountFrom === id">
           <van-space class="msg-left">
             <van-image
@@ -53,6 +90,8 @@
             <div class="b-f">{{ item.message }}</div>
           </van-space>
         </van-cell>
+
+        <!-- 自己 -->
         <van-cell v-else>
           <van-space class="msg-right">
             <span>{{ calTimeDiffGrp(item.created_at) }}</span>
@@ -77,7 +116,7 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 const { $request } = useNuxtApp()
-const { calTimeDiffGrp } = useCommon()
+const { calTimeDiffGrp, dateFormat } = useCommon()
 const route = useRoute()
 const { id } = route.params
 let listEle // 用來控制 scroll
@@ -162,6 +201,37 @@ const submit = async (values) => {
   props.sendWs(id, msg.value)
 
   msg.value = ''
+}
+
+const clickDeal = async (msg, id) => {
+  const res = await $request(`/message/deal`, 'post', {
+    quoter: id,
+    caseId: msg.split('-=')[0],
+    title: msg.split('-=')[1],
+    priceS: parseInt(msg.split('-=')[2]),
+    priceE: parseInt(msg.split('-=')[3])
+  })
+
+  if (res.code !== 0) {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+  } else {
+    list.data.push({
+      accountFrom: userStore.account,
+      accountTo: id,
+      message: msg,
+      created_at: dateFormat(new Date()),
+      isSystem: '2'
+    })
+
+    setTimeout(() => {
+      listEle.scrollTop = listEle.scrollHeight
+    }, 100)
+
+    showNotify({ type: 'success', message: '案件成交' })
+  }
 }
 </script>
 
@@ -298,5 +368,33 @@ a {
 
 .quoteRigth {
   float: right;
+}
+
+.dealTag {
+  width: 22rem;
+  height: 32rem;
+  background-color: #0c41f11d;
+  font-size: 1.5rem;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 2rem;
+
+  div {
+    margin: 1rem;
+    float: left;
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .dealTitle {
+    color: black;
+    font-weight: bold;
+  }
+}
+
+.dealFooter {
+  text-align: center;
+  width: 100%;
 }
 </style>

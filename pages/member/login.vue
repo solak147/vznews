@@ -68,6 +68,9 @@ useHead({
 const props = defineProps({
   navActive: {
     type: Function
+  },
+  doLoginGoble: {
+    type: Function
   }
 })
 
@@ -97,6 +100,11 @@ const login = async (values) => {
     userStore.account = loginModel.account
     showNotify({ type: 'success', message: '登入成功' })
     navigateTo('/member')
+
+    // 需等待token寫入
+    setTimeout(() => {
+      props.doLoginGoble()
+    }, 1000)
   } else {
     showNotify({ type: 'warning', message: '登入失敗' })
   }

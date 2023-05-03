@@ -2,7 +2,12 @@
   <div>
     <NuxtLayout>
       <main>
-        <NuxtPage :nav-active="callNavActive" :send-msg-obj="sendMsgObj" :send-ws="sendWs" />
+        <NuxtPage
+          :nav-active="callNavActive"
+          :send-msg-obj="sendMsgObj"
+          :send-ws="sendWs"
+          :do-login-goble="callDoLoginGoble"
+        />
       </main>
       <template #header>
         <CptHeader ref="cptHeader" :send-msg-obj="sendMsgObj" />
@@ -18,13 +23,6 @@ import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 const runtimeConfig = useRuntimeConfig()
 const { socket } = runtimeConfig.public
-
-onMounted(() => {
-  const token = useCookie('jwt-token')
-  if (token.value) {
-    connect()
-  }
-})
 
 let ws
 const sendMsgObj = reactive({ data: {} })
@@ -50,7 +48,11 @@ const connect = () => {
     // 必須寫在 onclose 內，每次 token 都必須重新取
     const token = useCookie('jwt-token')
     if (token.value) {
-      setTimeout(connect, 5000)
+      if (event.reason === '連線已存在') {
+        console.log(event.reason)
+      } else {
+        setTimeout(connect, 5000)
+      }
     }
   }
 }
@@ -65,6 +67,14 @@ const cptHeader = ref(null)
 
 const callNavActive = (index) => {
   cptHeader.value?.navActiveFn(index)
+}
+
+const callDoLoginGoble = () => {
+  const token = useCookie('jwt-token')
+  if (token.value) {
+    connect()
+  }
+  cptHeader.value?.refreshBadge()
 }
 </script>
 
