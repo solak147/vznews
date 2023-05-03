@@ -26,7 +26,7 @@ const props = defineProps({
 
 const badge = ref('')
 watch(props.sendMsgObj, () => {
-  badge.value = parseInt(badge.value) + 1
+  badge.value = parseInt(badge.value === '' ? 0 : badge.value) + 1
 })
 
 const active = ref(0)
@@ -70,6 +70,8 @@ const refreshBadge = async () => {
     if (res.code === 0) {
       if (res.data > 0) {
         badge.value = res.data
+      } else {
+        badge.value = ''
       }
     } else {
       showNotify({ type: 'warning', message: '資料獲取失敗' })

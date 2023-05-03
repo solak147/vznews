@@ -7,6 +7,7 @@
           :send-msg-obj="sendMsgObj"
           :send-ws="sendWs"
           :do-login-goble="callDoLoginGoble"
+          :refresh-badge="callRefreshBadge"
         />
       </main>
       <template #header>
@@ -23,6 +24,14 @@ import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 const runtimeConfig = useRuntimeConfig()
 const { socket } = runtimeConfig.public
+
+// 重整重連token
+onMounted(() => {
+  const token = useCookie('jwt-token')
+  if (token.value) {
+    connect()
+  }
+})
 
 let ws
 const sendMsgObj = reactive({ data: {} })
@@ -74,6 +83,10 @@ const callDoLoginGoble = () => {
   if (token.value) {
     connect()
   }
+  cptHeader.value?.refreshBadge()
+}
+
+const callRefreshBadge = () => {
   cptHeader.value?.refreshBadge()
 }
 </script>

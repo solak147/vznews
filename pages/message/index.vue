@@ -57,6 +57,9 @@ const props = defineProps({
   },
   sendMsgObj: {
     type: Object
+  },
+  refreshBadge: {
+    type: Function
   }
 })
 
@@ -103,6 +106,8 @@ const clickDetail = async (from) => {
   if (res.code !== 0) {
     showNotify({ type: 'warning', message: '資料更更新失敗' })
   }
+
+  props.refreshBadge()
 
   navigateTo(`/message/${from}`)
 }
