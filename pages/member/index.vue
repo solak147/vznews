@@ -14,7 +14,7 @@
         <van-collapse v-model="setSoho">
           <van-collapse-item title="接案設定" name="1">
             <div>
-              <NuxtLink to="/member/recSetting"> 接案資料設定 </NuxtLink>
+              <NuxtLink to="/member/sohoSetting"> 接案資料設定 </NuxtLink>
             </div>
             <div>
               <NuxtLink to="/member/recWork"> 我的作品 </NuxtLink>

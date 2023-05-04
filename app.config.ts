@@ -554,24 +554,24 @@ export default defineAppConfig({
     { text: '300萬以上', value: '300萬以上' }
   ],
   caseType: [
-    { text: '平面設計', value: '平面設計' },
-    { text: '網頁設計', value: '網頁設計' },
-    { text: '程式開發', value: '程式開發' },
-    { text: '翻譯寫作', value: '翻譯寫作 ' },
-    { text: '商攝娛樂', value: '商攝娛樂' },
-    { text: '影像製作', value: '影像製作' },
-    { text: '空間設計', value: '空間設計' },
-    { text: '生活服務', value: '生活服務' },
-    { text: '活動企劃', value: '活動企劃' },
-    { text: '專業顧問', value: '專業顧問' },
-    { text: '資訊工程', value: '資訊工程' }
+    { text: '平面設計', value: 'a' },
+    { text: '網頁設計', value: 'b' },
+    { text: '程式開發', value: 'c' },
+    { text: '翻譯寫作', value: 'd' },
+    { text: '商攝娛樂', value: 'e' },
+    { text: '影像製作', value: 'f' },
+    { text: '空間設計', value: 'g' },
+    { text: '生活服務', value: 'h' },
+    { text: '活動企劃', value: 'i' },
+    { text: '專業顧問', value: 'j' },
+    { text: '資訊工程', value: 'k' }
   ],
   experience: [
-    { text: '無接案經驗', value: '無接案經驗' },
-    { text: '0~1年接案經驗', value: '0~1年接案經驗' },
-    { text: '1~3年接案經驗', value: '1~3年接案經驗' },
-    { text: '3~5年接案經驗', value: '3~5年接案經驗' },
-    { text: '5~10年接案經驗', value: '5~10年接案經驗' },
-    { text: '10年以上接案經驗', value: '10年以上接案經驗' }
+    { text: '無接案經驗', value: '0' },
+    { text: '0~1年接案經驗', value: '1' },
+    { text: '1~3年接案經驗', value: '2' },
+    { text: '3~5年接案經驗', value: '3' },
+    { text: '5~10年接案經驗', value: '4' },
+    { text: '10年以上接案經驗', value: '5' }
   ]
 })

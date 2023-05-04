@@ -2,14 +2,14 @@
   <section>
     <NavBar title="接案資料設定" />
 
-    <van-form @submit="next" @failed="onFailed">
+    <van-form @submit="submit" @failed="onFailed">
       <van-cell-group inset>
         <div class="list">
           <label><span> * </span>接案狀態 :</label>
           <van-radio-group v-model="openChk">
             <van-space direction="vertical" size="0">
               <van-radio name="1">開啟，顯示聯絡資訊 (全站案主皆能查看您的聯絡資訊)</van-radio>
-              <van-radio name="2">關閉</van-radio>
+              <van-radio name="0">關閉</van-radio>
             </van-space>
           </van-radio-group>
         </div>
@@ -111,19 +111,19 @@
           />
         </van-popup>
 
-        <van-field
-          v-model="type"
-          is-link
-          readonly
-          required
-          name="type"
-          label="接案類別"
-          placeholder="點擊選擇類別"
-          @click="showType = true"
-        />
-        <van-popup v-model:show="showType" position="bottom">
-          <van-picker :columns="columns" @confirm="onTypeConfirm" @cancel="showType = false" />
-        </van-popup>
+        <van-field label="接案類別" required>
+          <template #input>
+            <van-checkbox-group v-model="typeChk" direction="horizontal">
+              <van-checkbox
+                v-for="item in caseType"
+                :key="item.value"
+                :name="item.value"
+                shape="square"
+                >{{ item.text }}</van-checkbox
+              >
+            </van-checkbox-group>
+          </template>
+        </van-field>
 
         <van-field
           v-model="exp"
@@ -141,7 +141,7 @@
 
         <van-field
           v-model="workContent"
-          name="workContent"
+          name="description"
           rows="4"
           autosize
           required
@@ -164,6 +164,14 @@
 
 <script setup>
 const appConfig = useAppConfig()
+const { $request } = useNuxtApp()
+
+onMounted(async () => {
+  const res = await $request('/member/sohoSetting', 'get')
+  if (res.code !== 0) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+})
 
 // 開放設定
 const openChk = ref('')
@@ -202,28 +210,43 @@ const emailPtn = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
 // 接案類別
 const { caseType } = appConfig
-const type = ref('')
-const showType = ref(false)
-const columns = caseType
-
-const onTypeConfirm = ({ selectedOptions }) => {
-  type.value = selectedOptions[0]?.text
-  showType.value = false
-}
+const typeChk = ref([])
 
 // 年資
 const { experience } = appConfig
 const exp = ref('')
+const expVal = ref('')
 const showExp = ref(false)
 const expCols = experience
 
 const onExpConfirm = ({ selectedOptions }) => {
   exp.value = selectedOptions[0]?.text
+  expVal.value = selectedOptions[0]?.value
   showExp.value = false
 }
 
 // 接案描述
 const workContent = ref('')
+
+const submit = async (values) => {
+  const res = await $request('/member/sohoSetting', 'post', {
+    ...values,
+    open: openChk.value,
+    role: roleChk.value,
+    zipcode: addressCascader.value,
+    expVal: expVal.value,
+    type: typeChk.value.join(',')
+  })
+
+  if (res.code === 0) {
+    showNotify({ type: 'success', message: '儲存成功' })
+  } else {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -266,5 +289,17 @@ const workContent = ref('')
 .pubName {
   color: #969799;
   font-size: 1.3rem;
+}
+
+.van-checkbox {
+  margin-bottom: 1rem;
+}
+
+:deep(.van-cascader__option) {
+  justify-content: center;
+}
+
+:deep(.van-tabs__nav) {
+  justify-content: center;
 }
 </style>
