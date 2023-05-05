@@ -1,4 +1,7 @@
 export default function () {
+  const appConfig = useAppConfig()
+  const { addressConfig, experience } = appConfig
+
   const calTimeDiff = (dateString) => {
     const now = new Date()
     const date = new Date(dateString)
@@ -101,10 +104,36 @@ export default function () {
     return dateString
   }
 
+  const transAddressCode = (zipcode) => {
+    const townArr = []
+    addressConfig.forEach((city) => {
+      city.children.forEach((t) => {
+        t.displayText = `${city.text} ${t.text}`
+        townArr.push(t)
+      })
+    })
+
+    const town = townArr.filter((t) => {
+      return t.value === zipcode
+    })
+
+    return town[0].displayText
+  }
+
+  const transExpCode = (code) => {
+    const exp = experience.filter((e) => {
+      return e.value === code
+    })
+
+    return exp
+  }
+
   return {
     calTimeDiff,
     calTimeDiffGrp,
     transContactTime,
-    dateFormat
+    dateFormat,
+    transAddressCode,
+    transExpCode
   }
 }

@@ -58,10 +58,14 @@ const connect = () => {
     const token = useCookie('jwt-token')
     if (token.value) {
       if (event.reason === '連線已存在') {
-        console.log(event.reason)
-      } else {
-        setTimeout(connect, 5000)
+        return
       }
+
+      if (event.reason === 'token已逾期') {
+        token.value = null
+        return
+      }
+      setTimeout(connect, 5000)
     }
   }
 }

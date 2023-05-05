@@ -91,7 +91,7 @@
         />
         <van-popup v-model:show="show" round position="bottom">
           <van-cascader
-            v-model="cascaderValue"
+            v-model="addressCascader"
             title="請選擇所在地區"
             :options="options"
             @close="show = false"
@@ -124,6 +124,7 @@
 
 <script setup>
 import { useUserStore } from '@/stores/user'
+const { transAddressCode } = useCommon()
 
 const pwdSwitch = ref(false)
 const oldPassword = ref('')
@@ -148,7 +149,7 @@ const appConfig = useAppConfig()
 const { addressConfig } = appConfig
 const show = ref(false)
 const addressTxt = ref('')
-const cascaderValue = ref('')
+const addressCascader = ref('')
 const options = addressConfig // 选项列表，children 代表子选项，支持多级嵌套
 // 全部选项选择完毕后，会触发 finish 事件
 const onFinish = ({ selectedOptions }) => {
@@ -164,27 +165,14 @@ onMounted(async () => {
   name.value = res.user.name
   phone.value = res.user.phone
   introduction.value = res.user.introduction
-  cascaderValue.value = res.user.zipcode
-
-  const townArr = []
-  addressConfig.forEach((city) => {
-    city.children.forEach((t) => {
-      t.displayText = `${city.text} ${t.text}`
-      townArr.push(t)
-    })
-  })
-
-  const town = townArr.filter((t) => {
-    return t.value === res.user.zipcode
-  })
-
-  addressTxt.value = town[0].displayText
+  addressCascader.value = res.user.zipcode
+  addressTxt.value = transAddressCode(res.user.zipcode)
 })
 
 const save = async (values) => {
   const res = await $request(`/member/profile/save`, 'post', {
     ...values,
-    zipcode: cascaderValue.value,
+    zipcode: addressCascader.value,
     account: userStore.account,
     pwdSwitch: pwdSwitch.value
   })

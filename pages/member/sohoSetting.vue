@@ -140,7 +140,7 @@
         </van-popup>
 
         <van-field
-          v-model="workContent"
+          v-model="description"
           name="description"
           rows="4"
           autosize
@@ -165,10 +165,34 @@
 <script setup>
 const appConfig = useAppConfig()
 const { $request } = useNuxtApp()
+const { transAddressCode, transExpCode } = useCommon()
 
 onMounted(async () => {
-  const res = await $request('/member/sohoSetting', 'get')
-  if (res.code !== 0) {
+  const res = await $request('/member/sohoSettingInit', 'get')
+  if (res.code === 0) {
+    if ('password' in res.data) {
+      name.value = res.data.name
+      phone.value = res.data.phone
+      email.value = res.data.email
+      addressCascader.value = res.data.zipcode
+      addressTxt.value = transAddressCode(res.data.zipcode)
+    } else {
+      openChk.value = res.data.open
+      roleChk.value = res.data.role
+      cityTalk.value = res.data.cityTalk
+      cityTalk2.value = res.data.cityTalk2
+      extension.value = res.data.extension
+      typeChk.value = res.data.type.split(',')
+      exp.value = transExpCode(res.data.exp)
+      description.value = res.data.description
+
+      name.value = res.data.name
+      phone.value = res.data.phone
+      email.value = res.data.email
+      addressCascader.value = res.data.zipcode
+      addressTxt.value = transAddressCode(res.data.zipcode)
+    }
+  } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
 })
@@ -226,7 +250,7 @@ const onExpConfirm = ({ selectedOptions }) => {
 }
 
 // 接案描述
-const workContent = ref('')
+const description = ref('')
 
 const submit = async (values) => {
   const res = await $request('/member/sohoSetting', 'post', {
