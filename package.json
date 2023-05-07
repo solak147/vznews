@@ -25,6 +25,7 @@
     "vue-tsc": "^1.2.0"
   },
   "dependencies": {
-    "nuxt-swiper": "^1.0.1"
+    "nuxt-swiper": "^1.0.1",
+    "vant": "^4.3.1"
   }
 }

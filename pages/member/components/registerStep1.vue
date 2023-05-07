@@ -41,7 +41,7 @@
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button round type="danger" native-type="submit">下一步</van-button></van-col
+          <van-button :disabled="nextDisable" round type="danger" native-type="submit">下一步</van-button></van-col
         >
       </van-row>
     </van-form>
@@ -78,8 +78,10 @@ watch(passwordConfirm, (newVal) => {
   }
 })
 
+const nextDisable = ref(false)
 const userStore = useUserStore()
 const next = async (values) => {
+  nextDisable.value = false
   const response = await useFetch('/registerStep1', {
     method: 'post',
     body: values,
@@ -93,6 +95,7 @@ const next = async (values) => {
     props.stepClick()
   } else {
     alert('帳號已存在')
+    nextDisable.value = true
   }
 }
 </script>
