@@ -192,6 +192,10 @@ const next = async (values) => {
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: underline;
+}
+
 :deep(label) {
   font-size: 1.3rem;
 }

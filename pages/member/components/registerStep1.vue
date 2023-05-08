@@ -41,7 +41,9 @@
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button :disabled="nextDisable" round type="danger" native-type="submit">下一步</van-button></van-col
+          <van-button :disabled="nextDisable" round type="danger" native-type="submit"
+            >下一步</van-button
+          ></van-col
         >
       </van-row>
     </van-form>
@@ -78,24 +80,38 @@ watch(passwordConfirm, (newVal) => {
   }
 })
 
+// 條款聲明確認
+const lawChk = ref(false)
+
 const nextDisable = ref(false)
 const userStore = useUserStore()
 const next = async (values) => {
-  nextDisable.value = false
+  if (!lawChk.value) {
+    showDialog({
+      message: '需同意本網站服務條款',
+      theme: 'round-button'
+    })
+    return
+  }
+
+  nextDisable.value = true
   const response = await useFetch('/registerStep1', {
     method: 'post',
     body: values,
     baseURL: '/api'
   })
 
-  if (response.data.value.msg === 'Success') {
+  if (!response.error.value) {
     userStore.account = email.value
     userStore.password = password.value
     userStore.vaildCode = response.data.value.data
     props.stepClick()
   } else {
-    alert('帳號已存在')
-    nextDisable.value = true
+    showDialog({
+      message: '帳號已存在',
+      theme: 'round-button'
+    })
+    nextDisable.value = false
   }
 }
 </script>

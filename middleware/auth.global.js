@@ -13,8 +13,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     showDialog({
       message: '請先登入',
       theme: 'round-button'
-    }).then(() => {
-      return navigateTo('/member/login')
     })
+    return navigateTo('/member/login')
   }
 })

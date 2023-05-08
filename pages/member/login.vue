@@ -87,15 +87,14 @@ const loginModel = reactive({
   account: '',
   password: ''
 })
-const login = async (values) => {
-  console.log(values)
+const login = async () => {
   const response = await useFetch('/login', {
     method: 'post',
     body: loginModel,
     baseURL: '/api'
   })
 
-  if (response.data.value.code === 0) {
+  if (!response.error.value) {
     token.value = response.data.value.data.token
     userStore.account = loginModel.account
     showNotify({ type: 'success', message: '登入成功' })

@@ -99,12 +99,15 @@ const next = async (values) => {
     baseURL: '/api'
   })
 
-  if (res.data.value.code === 0) {
+  if (!response.error.value) {
     token.value = res.data.value.data.token
     showNotify({ type: 'success', message: '註冊成功' })
     navigateTo('/member')
   } else {
-    showNotify({ type: 'warning', message: '註冊失敗' })
+    showDialog({
+      message: '註冊失敗',
+      theme: 'round-button'
+    })
   }
 }
 </script>

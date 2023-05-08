@@ -35,9 +35,11 @@
       <li>
         <h4>案件說明</h4>
 
-        <p>{{ casem.data.workContent }}</p>
+        <van-text-ellipsis rows="3" :content="casem.data.workContent" />
 
-        <div v-if="!token" style="text-align: center"><a href="#">查看完整內容</a></div>
+        <div v-if="!token" style="text-align: center">
+          <a href="javascript:void(0)" @click="navigateTo('/member/login')">查看完整內容</a>
+        </div>
       </li>
 
       <li>
@@ -61,7 +63,11 @@
           >登入</a
         ></van-col
       >
-      <van-col span="24"><van-button type="danger">免費註冊</van-button></van-col>
+      <van-col span="24"
+        ><van-button type="danger" @click="navigateTo('/member/register')"
+          >免費註冊</van-button
+        ></van-col
+      >
     </van-row>
 
     <div v-else class="bossinfo">
@@ -230,8 +236,9 @@ ul {
   li {
     font-size: 1.5rem;
 
-    p {
-      margin: 1rem;
+    .van-text-ellipsis {
+      margin-left: 1rem;
+      margin-bottom: 1rem;
       line-height: 2rem;
       font-size: 1.5rem;
     }
