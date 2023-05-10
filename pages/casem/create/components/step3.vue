@@ -108,7 +108,7 @@ import { useCaseStore } from '@/stores/case'
 import { useUserStore } from '@/stores/user'
 const caseStore = useCaseStore()
 const userStore = useUserStore()
-const { $request, $upload } = useNuxtApp()
+const { $request } = useNuxtApp()
 
 onMounted(async () => {
   const res = await $request(`/member/profile/${userStore.account}`, 'get')
@@ -135,7 +135,7 @@ const linePtn = /^[a-zA-Z0-9_-]*$/
 
 const lawChk = ref(false)
 
-const next = async (values) => {
+const next = async () => {
   if (timeChk.value.length === 0) {
     showDialog({
       message: '聯絡時段未選擇',
@@ -150,39 +150,49 @@ const next = async (values) => {
     })
   }
 
-  const filesName = []
+  const formData = new FormData()
   caseStore.fileList.forEach((e) => {
-    filesName.push(e.file.name)
+    formData.append('filesName', e.file.name)
+    formData.append('files[]', e.file)
   })
 
-  const res = await $request('/case/create', 'post', {
-    ...caseStore,
-    ...values,
-    account: userStore.account,
-    contactTime: timeChk.value.join(),
-    filesName
-  })
+  formData.append('title', caseStore.title)
+  formData.append('type', caseStore.type)
+  formData.append('kind', caseStore.kind)
+  formData.append('expectDate', caseStore.expectDate)
+  formData.append('expectDateChk', caseStore.expectDateChk)
+  formData.append('expectMoney', caseStore.expectMoney)
+  formData.append('workArea', caseStore.workArea)
+  formData.append('workAreaChk', caseStore.workAreaChk)
+  formData.append('workContent', caseStore.workContent)
+
+  formData.append('name', name.value)
+  formData.append('phone', phone.value)
+  formData.append('cityTalk', cityTalk.value)
+  formData.append('cityTalk2', cityTalk2.value)
+  formData.append('extension', extension.value)
+  formData.append('contactTime', timeChk.value.join())
+  formData.append('email', email.value)
+  formData.append('line', line.value)
+
+  const res = await $request('/case/create', 'post', formData)
+
+  // const res = await $request('/case/create', 'post', {
+  //   ...caseStore,
+  //   ...values,
+  //   account: userStore.account,
+  //   contactTime: timeChk.value.join(),
+  //   filesName
+  // })
 
   if (res.code !== 0) {
     showDialog({
       message: res.msg,
       theme: 'round-button'
     })
-    return
-  }
-
-  const resFile = await $upload(caseStore.fileList)
-
-  if (resFile.code === 0) {
-    showDialog({
-      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
-      theme: 'round-button'
-    }).then(() => {
-      navigateTo('/')
-    })
   } else {
     showDialog({
-      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待。(附件上傳失敗，請於案件編輯頁查看)',
+      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
       theme: 'round-button'
     }).then(() => {
       navigateTo('/')
