@@ -46,15 +46,22 @@ export default defineNuxtPlugin(() => {
         return returnData
       },
 
-      upload: async (files) => {
+      upload: async (files, isMany = false) => {
         let returnData = {}
-
+        let url
         const formData = new FormData()
-        for (let i = 0; i < files.length; i++) {
-          formData.append('files[]', files[i].file)
+
+        if (isMany) {
+          for (let i = 0; i < files.length; i++) {
+            formData.append('files[]', files[i].file)
+          }
+          url = '/file/uploads'
+        } else {
+          formData.append('file', file)
+          url = '/file/upload'
         }
 
-        await useFetch('/file/upload', {
+        await useFetch(url, {
           method: 'post',
           body: formData,
           baseURL: '/api',
@@ -121,6 +128,38 @@ export default defineNuxtPlugin(() => {
             URL.revokeObjectURL(url)
           }
         })
+      },
+
+      downloadShow: async (filename) => {
+        let res
+        await useFetch(`/file/sohoDownload/${filename}`, {
+          method: 'get',
+          baseURL: '/api',
+          onRequest({ options }) {
+            const token = useCookie('jwt-token')
+
+            // 設定請求時夾帶的標頭
+            options.headers = options.headers || {}
+            options.headers.authorization = `Bearer ${token.value}`
+          },
+          async onResponse({ response }) {
+            // -2:jwt驗證未通過
+            if (response._data.code === -2) {
+              showDialog({
+                message: '驗證已逾期，請重新登入',
+                theme: 'round-button'
+              }).then(() => {
+                navigateTo('/member/login')
+              })
+            }
+
+            const blob = await response._data
+            // 建立暫存的 URL 以供下載使用
+            const url = URL.createObjectURL(blob)
+            res = url
+          }
+        })
+        return res
       }
     }
   }

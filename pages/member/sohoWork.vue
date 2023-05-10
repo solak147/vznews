@@ -17,6 +17,7 @@
             accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt"
             @oversize="onOversize"
           />
+          <van-image v-for="f in fileOnline" :key="f" width="100" height="100" :src="f" />
         </van-space>
       </van-cell-group>
 
@@ -67,6 +68,21 @@
 </template>
 
 <script setup>
+const { $request, $upload, $downloadShow } = useNuxtApp()
+const fileOnline = ref([])
+
+onMounted(async () => {
+  const res = await $request('/file/sohowork', 'get')
+  if (res.code === 0) {
+    res.data.forEach(async (e) => {
+      const url = await $downloadShow(e.filename)
+      fileOnline.value.push(url)
+    })
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+})
+
 // 檔案上傳
 const fileList = ref([])
 const onOversize = (file) => {
@@ -74,14 +90,18 @@ const onOversize = (file) => {
   showToast('文件大小不能超过 2MB')
 }
 
-const afterRead = (file) => {
+const afterRead = async (file) => {
   file.status = 'uploading'
   file.message = '上傳中...'
 
-  setTimeout(() => {
+  const res = await $upload(file.file)
+  if (res.code === 0) {
     file.status = 'done'
     file.message = '上傳成功'
-  }, 1000)
+  } else {
+    file.status = 'failed'
+    file.message = '上传失败'
+  }
 }
 
 // 作品網址

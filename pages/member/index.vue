@@ -17,7 +17,7 @@
               <NuxtLink to="/member/sohoSetting"> 接案資料設定 </NuxtLink>
             </div>
             <div>
-              <NuxtLink to="/member/recWork"> 我的作品 </NuxtLink>
+              <NuxtLink to="/member/sohoWork"> 我的作品 </NuxtLink>
             </div>
           </van-collapse-item>
         </van-collapse>
