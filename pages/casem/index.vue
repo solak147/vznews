@@ -2,7 +2,12 @@
   <section>
     <NavBar title="案件瀏覽" />
 
-    <van-search v-model="search" placeholder="請輸入搜索關鍵詞" @search="onSearch" />
+    <van-search
+      v-model="search"
+      placeholder="請輸入搜索關鍵詞"
+      @blur="onSearch"
+      @clear="clearrSearch"
+    />
 
     <van-dropdown-menu>
       <van-dropdown-item v-model="city" :options="cityOpt" @change="menuChg($event, 'city')" />
@@ -30,7 +35,7 @@
         >
       </div>
 
-      <div><a href="javascript:void(0)">清除全部</a></div>
+      <div><a href="javascript:void(0)" @click="clearAll">清除全部</a></div>
     </div>
 
     <van-list
@@ -86,11 +91,11 @@ onMounted(() => {
 
 // 搜索 bar
 const search = ref('')
-const onSearch = async (val) => {
-  loading.value = true
+const onSearch = async () => {
   from.value = 0
+  loading.value = true
   const res = await $request(
-    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}&search=${val}`,
+    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}&search=${search.value}`,
     'get'
   )
 
@@ -111,7 +116,7 @@ const onSearch = async (val) => {
 const cityTags = ref('')
 const typeTags = ref('')
 const priceTags = ref('')
-const allTags = ref([cityTags, typeTags, priceTags])
+const allTags = ref([cityTags, typeTags, priceTags, search])
 
 // 地區
 const city = ref('')
@@ -128,7 +133,11 @@ const menuChg = async (sel, menu) => {
       break
 
     case 'type':
-      typeTags.value = sel
+      if (sel === '') {
+        typeTags.value = ''
+      } else {
+        typeTags.value = caseType.filter((e) => e.value.toString() === sel)[0].text
+      }
       break
 
     case 'price':
@@ -139,7 +148,7 @@ const menuChg = async (sel, menu) => {
   loading.value = true
   from.value = 0
   const res = await $request(
-    `/case/get?from=${from.value}&city=${city.value}&type=${type.value}&price=${casePrice.value}&search=${search.value}`,
+    `/case/get?from=${from.value}&city=${city.value}&type=${typeTags.value}&price=${casePrice.value}&search=${search.value}`,
     'get'
   )
 
@@ -190,10 +199,24 @@ const onLoad = async () => {
   if (list.value.length >= res.cnt) {
     finished.value = true
   }
+}
 
-  setTimeout(function () {
-    // 防止拉到底 db es 不同步瘋狂 request
-  }, 10000) // 3000 毫秒等于 3 秒钟
+// 清除全部
+const clearAll = () => {
+  city.value = ''
+  type.value = ''
+  casePrice.value = ''
+  cityTags.value = ''
+  typeTags.value = ''
+  priceTags.value = ''
+  search.value = ''
+
+  from.value = 0
+  onLoad()
+}
+
+const clearrSearch = () => {
+  menuChg()
 }
 </script>
 

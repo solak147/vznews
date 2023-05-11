@@ -57,7 +57,7 @@ export default defineNuxtPlugin(() => {
           }
           url = '/file/uploads'
         } else {
-          formData.append('file', file)
+          formData.append('file', files)
           url = '/file/upload'
         }
 
@@ -91,12 +91,22 @@ export default defineNuxtPlugin(() => {
       },
 
       download: async (filename) => {
+        const token = useCookie('jwt-token')
+        if (!token.value) {
+          showDialog({
+            message: '請先登入才可下載檔案',
+            theme: 'round-button'
+          }).then(() => {
+            navigateTo('/member/login')
+          })
+
+          return
+        }
+
         await useFetch(`/file/download/${filename}`, {
           method: 'get',
           baseURL: '/api',
           onRequest({ options }) {
-            const token = useCookie('jwt-token')
-
             // 設定請求時夾帶的標頭
             options.headers = options.headers || {}
             options.headers.authorization = `Bearer ${token.value}`

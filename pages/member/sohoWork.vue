@@ -2,7 +2,7 @@
   <section>
     <NavBar title="我的作品" />
 
-    <van-form @submit="next" @failed="onFailed">
+    <van-form @submit="add" @failed="onFailed">
       <van-cell-group inset>
         <van-space direction="vertical">
           <label>附件上傳 :</label>
@@ -16,8 +16,8 @@
             :max-count="5"
             accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt"
             @oversize="onOversize"
+            @delete="onDelete"
           />
-          <van-image v-for="f in fileOnline" :key="f" width="100" height="100" :src="f" />
         </van-space>
       </van-cell-group>
 
@@ -38,7 +38,7 @@
           :rules="[{ pattern: explainPtn, message: '文字過長' }]"
         />
         <van-field left-icon="warning-o" placeholder="最多新增 10 筆資料" readonly />
-        <van-button icon="plus" type="primary" size="small" @click="add">添加</van-button>
+        <van-button icon="plus" type="primary" size="small" native-type="submit">添加</van-button>
       </van-cell-group>
 
       <van-cell-group inset class="list">
@@ -49,13 +49,20 @@
           @load="onLoad"
         >
           <div v-for="item in list" :key="item">
-            <van-field :model-value="item.url" name="website" label="作品網址" readonly />
+            <van-field :model-value="item.url" label="作品網址" readonly />
 
-            <van-field :model-value="item.explain" name="explain" label="作品說明" readonly />
+            <van-field :model-value="item.explain" label="作品說明" readonly />
 
             <van-field>
               <template #button>
-                <van-button icon="delete" type="danger" size="small" @click="add">刪除</van-button>
+                <van-button
+                  icon="delete"
+                  type="danger"
+                  size="small"
+                  native-type="button"
+                  @click="delBtn(item)"
+                  >刪除</van-button
+                >
               </template>
             </van-field>
 
@@ -69,18 +76,55 @@
 
 <script setup>
 const { $request, $upload, $downloadShow } = useNuxtApp()
-const fileOnline = ref([])
+
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
 
 onMounted(async () => {
+  props.navActive(3)
+
   const res = await $request('/file/sohowork', 'get')
   if (res.code === 0) {
     res.data.forEach(async (e) => {
-      const url = await $downloadShow(e.filename)
-      fileOnline.value.push(url)
+      if (
+        e.filename.toLowerCase().endsWith('.png') ||
+        e.filename.toLowerCase().endsWith('.jpf') ||
+        e.filename.toLowerCase().endsWith('.gif')
+      ) {
+        fileList.value.push({
+          url: await $downloadShow(e.filename),
+          name: e.filename,
+          isImage: true
+        })
+      } else {
+        fileList.value.push({ url: e.filename, name: e.filename })
+      }
     })
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
+
+  const resUrl = await $request('/member/sohoUrl', 'get')
+  if (resUrl.code === 0) {
+    let index = 0
+    resUrl.data.forEach((e) => {
+      list.value.push({ index, url: e.url, explain: e.explain })
+      index++
+    })
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+})
+
+onUnmounted(() => {
+  fileList.value.forEach((e) => {
+    if (e.url.startsWith('blob:')) {
+      URL.revokeObjectURL(e.url)
+    }
+  })
 })
 
 // 檔案上傳
@@ -104,6 +148,11 @@ const afterRead = async (file) => {
   }
 }
 
+// 檔案刪除
+const onDelete = async (file) => {
+  await $request(`/file/sohowork/${file.name}`, 'delete')
+}
+
 // 作品網址
 const url = ref('')
 const urlPtn = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i
@@ -112,7 +161,7 @@ const urlPtn = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i
 const explain = ref('')
 const explainPtn = /^.{1,20}$/
 
-const add = () => {
+const add = async (values) => {
   if (list.value.length > 9) {
     showDialog({
       message: '已超過10筆，無法再新增!',
@@ -120,7 +169,35 @@ const add = () => {
     })
     return
   }
-  list.value.push({ url: url.value, explain: explain.value })
+
+  const res = await $request(`/member/sohoUrl`, 'post', { ...values })
+
+  if (res.code !== 0) {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+    return
+  }
+
+  list.value.push({ index: list.value.length + 1, url: url.value, explain: explain.value })
+}
+
+// 網址刪除
+const delBtn = async (i) => {
+  const res = await $request(`/member/sohoUrl`, 'delete', {
+    url: i.url
+  })
+
+  if (res.code === 0) {
+    list.value = list.value.filter((item) => item.index !== i.index)
+    showNotify({ type: 'success', message: '刪除成功' })
+  } else {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    })
+  }
 }
 
 const list = ref([])
