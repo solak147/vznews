@@ -19,6 +19,9 @@
             <div>
               <NuxtLink to="/member/sohoWork"> 我的作品 </NuxtLink>
             </div>
+            <div>
+              <NuxtLink to="/member/sohoPreview"> 個人檔案預覽 </NuxtLink>
+            </div>
           </van-collapse-item>
         </van-collapse>
 

@@ -237,6 +237,14 @@ onMounted(async () => {
   }
 })
 
+onUnmounted(() => {
+  fileList.value.forEach((e) => {
+    if (e.url && e.url.startsWith('blob:')) {
+      URL.revokeObjectURL(e.url)
+    }
+  })
+})
+
 // 頭像上傳
 const fileList = ref([])
 const onOversize = () => {

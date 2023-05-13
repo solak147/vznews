@@ -121,7 +121,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   fileList.value.forEach((e) => {
-    if (e.url.startsWith('blob:')) {
+    if (e.url && e.url.startsWith('blob:')) {
       URL.revokeObjectURL(e.url)
     }
   })

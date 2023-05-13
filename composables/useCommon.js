@@ -1,6 +1,6 @@
 export default function () {
   const appConfig = useAppConfig()
-  const { addressConfig, experience } = appConfig
+  const { addressConfig, experience, caseType } = appConfig
 
   const calTimeDiff = (dateString) => {
     const now = new Date()
@@ -128,12 +128,47 @@ export default function () {
     return exp
   }
 
+  const trnasRoleCode = (code) => {
+    let role
+    switch (code) {
+      case '1':
+        role = '個人兼職'
+        break
+      case '2':
+        role = '專職SOHO'
+        break
+      case '3':
+        role = '工作室'
+        break
+      case '4':
+        role = '兼職上班族'
+        break
+      case '5':
+        role = '公司'
+        break
+      case '6':
+        role = '學生'
+        break
+    }
+    return role
+  }
+
+  const trnasCaseTypeCode = (codeArr) => {
+    let res = caseType.filter((e) => {
+      return codeArr.includes(e.value)
+    })
+    res = res.map((obj) => obj.text).join(',')
+    return res
+  }
+
   return {
     calTimeDiff,
     calTimeDiffGrp,
     transContactTime,
     dateFormat,
     transAddressCode,
-    transExpCode
+    transExpCode,
+    trnasRoleCode,
+    trnasCaseTypeCode
   }
 }
