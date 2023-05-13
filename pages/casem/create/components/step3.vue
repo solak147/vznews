@@ -15,6 +15,7 @@
           label="聯絡人"
           required
           placeholder="請輸入聯絡人"
+          readonly
           :rules="[{ pattern: namePtn, required: true, message: '請輸入正確格式' }]"
         />
         <van-field

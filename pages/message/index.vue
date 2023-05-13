@@ -9,7 +9,7 @@
       @load="onLoad"
     >
       <van-swipe-cell v-for="item in list.data" :key="item">
-        <van-cell @click="clickDetail(item.account)">
+        <van-cell @click="clickDetail(item.account, item.name)">
           <template #icon>
             <van-image
               round
@@ -19,7 +19,7 @@
             />
           </template>
           <template #title>
-            <label>{{ item.account }}</label>
+            <label>{{ item.name }}</label>
             <span>{{ calTimeDiff(item.crtDte) }}</span>
           </template>
           <template #label>
@@ -48,6 +48,8 @@
 </template>
 
 <script setup>
+import { useMsgStore } from '@/stores/message'
+const msgStore = useMsgStore()
 const { calTimeDiff } = useCommon()
 const { $request } = useNuxtApp()
 
@@ -98,7 +100,7 @@ const onLoad = async () => {
   finished.value = true
 }
 
-const clickDetail = async (from) => {
+const clickDetail = async (from, name) => {
   const res = await $request('/message/updateRead', 'put', {
     accountFrom: from
   })
@@ -109,6 +111,7 @@ const clickDetail = async (from) => {
 
   props.refreshBadge()
 
+  msgStore.msgTo = name
   navigateTo(`/message/${from}`)
 }
 </script>

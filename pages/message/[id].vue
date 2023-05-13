@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar :title="id" />
+    <NavBar :title="msgStore.msgTo" />
 
     <van-list id="list" v-model:loading="loading" :finished="finished" @load="onLoad">
       <template v-for="item in list.data" :key="item">
@@ -18,11 +18,7 @@
                 `$${item.message.split('-=')[2]} ~ $${item.message.split('-=')[3]}`
               }}</span>
             </div>
-            <div>
-              聯絡人 : <span> todo </span>
-              <!-- todo 改為使用者設定姓名 -->
-            </div>
-            <div>連絡信箱 : <span>todo</span></div>
+
             <div>
               成交日期 : <span>{{ item.created_at.substring(0, 10) }}</span>
             </div>
@@ -112,9 +108,11 @@
 </template>
 
 <script setup>
+import { useMsgStore } from '@/stores/message'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
+const msgStore = useMsgStore()
 const { $request } = useNuxtApp()
 const { calTimeDiffGrp, dateFormat } = useCommon()
 const route = useRoute()
@@ -372,7 +370,7 @@ a {
 
 .dealTag {
   width: 22rem;
-  height: 32rem;
+  height: 25rem;
   background-color: #0c41f11d;
   font-size: 1.5rem;
   margin: 1rem;
@@ -396,5 +394,6 @@ a {
 .dealFooter {
   text-align: center;
   width: 100%;
+  margin-left: 0 !important;
 }
 </style>

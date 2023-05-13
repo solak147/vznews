@@ -46,22 +46,16 @@ export default defineNuxtPlugin(() => {
         return returnData
       },
 
-      upload: async (files, isMany = false) => {
+      upload: async (file, param = 'work') => {
         let returnData = {}
-        let url
+
+        // for (let i = 0; i < files.length; i++) {
+        //   formData.append('files[]', files[i].file)
+        // }
         const formData = new FormData()
+        formData.append('file', file)
 
-        if (isMany) {
-          for (let i = 0; i < files.length; i++) {
-            formData.append('files[]', files[i].file)
-          }
-          url = '/file/uploads'
-        } else {
-          formData.append('file', files)
-          url = '/file/upload'
-        }
-
-        await useFetch(url, {
+        await useFetch(`/file/upload/${param}`, {
           method: 'post',
           body: formData,
           baseURL: '/api',
@@ -140,9 +134,9 @@ export default defineNuxtPlugin(() => {
         })
       },
 
-      downloadShow: async (filename) => {
+      downloadShow: async (filename, param = 'work') => {
         let res
-        await useFetch(`/file/sohoDownload/${filename}`, {
+        await useFetch(`/file/sohoDownload/${filename}/${param}`, {
           method: 'get',
           baseURL: '/api',
           onRequest({ options }) {

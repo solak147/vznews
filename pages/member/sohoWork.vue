@@ -86,7 +86,7 @@ const props = defineProps({
 onMounted(async () => {
   props.navActive(3)
 
-  const res = await $request('/file/sohowork', 'get')
+  const res = await $request('/file/sohowork/work', 'get')
   if (res.code === 0) {
     res.data.forEach(async (e) => {
       if (
@@ -150,7 +150,7 @@ const afterRead = async (file) => {
 
 // 檔案刪除
 const onDelete = async (file) => {
-  await $request(`/file/sohowork/${file.name}`, 'delete')
+  await $request(`/file/sohowork/${file.name}/work`, 'delete')
 }
 
 // 作品網址

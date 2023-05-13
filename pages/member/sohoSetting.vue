@@ -5,6 +5,20 @@
     <van-form @submit="submit" @failed="onFailed">
       <van-cell-group inset>
         <div class="list">
+          <label>你的頭像 :</label>
+          <p>檔案不可超過2MB。(檔案格式為：.png,.jpg,.jpeg,.gif,.bmp,.svg)</p>
+          <van-uploader
+            v-model="fileList"
+            :max-size="2 * 1024 * 1024"
+            :after-read="afterRead"
+            :max-count="5"
+            accept=".png,.jpg,.jpeg,.gif,.bmp,.svg"
+            @oversize="onOversize"
+            @delete="onDelete"
+          />
+        </div>
+
+        <div class="list">
           <label><span> * </span>接案狀態 :</label>
           <van-radio-group v-model="openChk">
             <van-space direction="vertical" size="0">
@@ -22,6 +36,7 @@
               name="name"
               placeholder="暱稱"
               style="width: 10rem"
+              readonly
               :rules="[{ pattern: namePtn, message: '請輸入正確格式' }]"
             />
             <span class="pubName">此為您對外公開顯示名稱</span>
@@ -164,10 +179,31 @@
 
 <script setup>
 const appConfig = useAppConfig()
-const { $request } = useNuxtApp()
+const { $request, $upload, $downloadShow } = useNuxtApp()
 const { transAddressCode, transExpCode } = useCommon()
 
+const props = defineProps({
+  navActive: {
+    type: Function
+  }
+})
+
 onMounted(async () => {
+  props.navActive(3)
+
+  const resAvatar = await $request('/file/sohowork/avatar', 'get')
+  if (resAvatar.code === 0) {
+    resAvatar.data.forEach(async (e) => {
+      fileList.value.push({
+        url: await $downloadShow(e.filename, 'avatar'),
+        name: e.filename,
+        isImage: true
+      })
+    })
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+
   const res = await $request('/member/sohoSettingInit', 'get')
   if (res.code === 0) {
     if ('password' in res.data) {
@@ -183,7 +219,11 @@ onMounted(async () => {
       cityTalk2.value = res.data.cityTalk2
       extension.value = res.data.extension
       typeChk.value = res.data.type.split(',')
-      exp.value = transExpCode(res.data.exp)
+
+      const expObj = transExpCode(res.data.exp)[0]
+      exp.value = expObj.text
+      expVal.value = expObj.value
+
       description.value = res.data.description
 
       name.value = res.data.name
@@ -196,6 +236,31 @@ onMounted(async () => {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
 })
+
+// 頭像上傳
+const fileList = ref([])
+const onOversize = () => {
+  showToast('文件大小不能超过 2MB')
+}
+
+const afterRead = async (file) => {
+  file.status = 'uploading'
+  file.message = '上傳中...'
+
+  const res = await $upload(file.file, 'avatar')
+  if (res.code === 0) {
+    file.status = 'done'
+    file.message = '上傳成功'
+  } else {
+    file.status = 'failed'
+    file.message = '上传失败'
+  }
+}
+
+// 檔案刪除
+const onDelete = async (file) => {
+  await $request(`/file/sohowork/${file.name}/avatar`, 'delete')
+}
 
 // 開放設定
 const openChk = ref('')
@@ -274,6 +339,13 @@ const submit = async (values) => {
 </script>
 
 <style lang="less" scoped>
+p {
+  line-height: 1.5rem;
+  margin: 1rem 1.8rem;
+  font-size: 1.3rem;
+  color: #969799;
+}
+
 .list {
   margin: 1rem;
 }

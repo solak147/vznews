@@ -139,8 +139,11 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/stores/user'
+
 const { $request, $download } = useNuxtApp()
 const { calTimeDiff, transContactTime } = useCommon()
+const userStore = useUserStore()
 const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
@@ -201,6 +204,15 @@ const clickQuote = () => {
     })
     return false
   }
+
+  if (casem.data.account === userStore.account) {
+    showDialog({
+      message: '無法報價自己發布的案件',
+      theme: 'round-button'
+    })
+    return false
+  }
+
   quoteCase.value?.showQuote(casem)
 }
 </script>

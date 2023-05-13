@@ -6,7 +6,7 @@
       v-model="search"
       placeholder="請輸入搜索關鍵詞"
       @blur="onSearch"
-      @clear="clearrSearch"
+      @clear="clearSearch"
     />
 
     <van-dropdown-menu>
@@ -24,13 +24,14 @@
         已選擇 :
 
         <van-tag
-          v-for="item in allTags"
+          v-for="(item, index) in allTags"
           v-show="item.value"
           :key="item"
           type="primary"
           size="large"
           closeable
           round
+          @close="clearTag(index)"
           >{{ item.value }}</van-tag
         >
       </div>
@@ -215,8 +216,29 @@ const clearAll = () => {
   onLoad()
 }
 
-const clearrSearch = () => {
-  menuChg()
+const clearSearch = () => {
+  onSearch()
+}
+
+// 清除標籤(單)
+const clearTag = (index) => {
+  allTags.value[index].value = ''
+
+  switch (index) {
+    case 0:
+      city.value = ''
+      break
+    case 1:
+      type.value = ''
+      break
+    case 2:
+      casePrice.value = ''
+      break
+    case 3:
+      search.value = ''
+      break
+  }
+  onSearch()
 }
 </script>
 
