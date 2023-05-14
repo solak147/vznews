@@ -78,20 +78,62 @@
     </van-cell-group>
 
     <van-cell-group>
-      <van-image
-        v-for="(item, index) in workPicList.images"
-        :key="item"
-        width="7rem"
-        height="7rem"
-        :src="item"
-        @click="showImg(index)"
-      />
+      <van-space direction="vertical">
+        <label>作品檔案 :</label>
+        <div>
+          <van-image
+            v-for="(item, index) in workPicList.images"
+            :key="item"
+            width="7rem"
+            height="7rem"
+            :src="item"
+            @click="showImg(index)"
+          />
+        </div>
+
+        <div>
+          <a
+            v-for="item in workFileList"
+            :key="item"
+            href="javascript:void(0)"
+            class="workFile"
+            @click="$download(`/file/sohoDownload/${item.name}/work`, item.name)"
+            >{{ item.name }}</a
+          >
+        </div>
+
+        <div style="margin-top: 3rem">
+          <label>作品網址 :</label>
+          <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <div v-for="item in list" :key="item">
+              <van-field label="作品網址">
+                <template #input>
+                  <a :href="item.url">{{ item.url }}</a>
+                </template>
+              </van-field>
+
+              <van-field :model-value="item.explain" label="作品說明" readonly />
+
+              <van-divider
+                :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
+              />
+            </div>
+          </van-list>
+        </div>
+      </van-space>
     </van-cell-group>
+
+    <van-cell-group> </van-cell-group>
   </section>
 </template>
 
 <script setup>
-const { $request, $downloadShow } = useNuxtApp()
+const { $request, $download, $downloadShow } = useNuxtApp()
 const { transAddressCode, transExpCode, trnasRoleCode, trnasCaseTypeCode } = useCommon()
 
 const props = defineProps({
@@ -153,8 +195,20 @@ onMounted(async () => {
         e.filename.toLowerCase().endsWith('.gif')
       ) {
         workPicList.images.push(await $downloadShow(e.filename))
-        console.log(workPicList.value)
+      } else {
+        workFileList.value.push({ url: await $downloadShow(e.filename), name: e.filename })
       }
+    })
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+
+  const resUrl = await $request('/member/sohoUrl', 'get')
+  if (resUrl.code === 0) {
+    let index = 0
+    resUrl.data.forEach((e) => {
+      list.value.push({ index, url: e.url, explain: e.explain })
+      index++
     })
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
@@ -198,22 +252,36 @@ const workPicList = reactive({
   startPosition: 0
 })
 
+// 作品檔案
+const workFileList = ref([])
+
 const showImg = (index) => {
   workPicList.startPosition = index
   showImagePreview(workPicList)
 }
+
+// 作品網址
+const list = ref([])
+const loading = ref(false)
+const finished = ref(false)
+
+const onLoad = () => {
+  // 加载状态结束
+  loading.value = false
+  finished.value = true
+}
 </script>
 
 <style lang="less" scoped>
+a {
+  text-decoration: underline;
+}
+
 p {
   line-height: 1.5rem;
   margin: 1rem 1.8rem;
   font-size: 1.3rem;
   color: #969799;
-}
-
-.list {
-  margin: 1rem;
 }
 
 :deep(label) {
@@ -235,15 +303,29 @@ p {
 }
 
 :deep(.van-card__desc) {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-left: 1rem;
   color: black;
 }
 
 .exp {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   float: right;
   color: #969799;
 }
+
+.van-image {
+  margin: 1rem;
+}
+
+.van-space {
+  padding: 1rem;
+}
+
+.workFile {
+  font-size: 1.3rem;
+  margin: 1rem;
+}
+
 // white-space: pre-wrap; 顯示換行&空白
 </style>

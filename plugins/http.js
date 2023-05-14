@@ -84,8 +84,9 @@ export default defineNuxtPlugin(() => {
         return returnData
       },
 
-      download: async (filename) => {
+      download: async (url, filename) => {
         const token = useCookie('jwt-token')
+
         if (!token.value) {
           showDialog({
             message: '請先登入才可下載檔案',
@@ -97,7 +98,7 @@ export default defineNuxtPlugin(() => {
           return
         }
 
-        await useFetch(`/file/download/${filename}`, {
+        await useFetch(url, {
           method: 'get',
           baseURL: '/api',
           onRequest({ options }) {
@@ -116,7 +117,10 @@ export default defineNuxtPlugin(() => {
               })
             }
 
-            const blob = await response._data
+            // const blob = await response._data // 非圖片檔案無法下載 (非 Blob 類型)
+            // new Blob([data], { type: "text/plain" }) 第 2 參數可以指定 Blob 的類型
+            const blob = new Blob([await response._data])
+
             // 建立暫存的 URL 以供下載使用
             const url = URL.createObjectURL(blob)
 

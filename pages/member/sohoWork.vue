@@ -13,7 +13,7 @@
             v-model="fileList"
             :max-size="2 * 1024 * 1024"
             :after-read="afterRead"
-            :max-count="5"
+            :max-count="10"
             accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt"
             @oversize="onOversize"
             @delete="onDelete"
