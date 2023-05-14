@@ -222,7 +222,7 @@ const clickQuote = async () => {
       theme: 'round-button'
     }).then(() => {
       if (res.msg === '尚未填寫接案設定') {
-        navigateTo('/member/sohoSetting')
+        navigateTo('/member/soho')
       }
     })
     return false

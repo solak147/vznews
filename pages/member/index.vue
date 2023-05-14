@@ -14,15 +14,15 @@
         <van-collapse v-model="setSoho">
           <van-collapse-item title="接案設定" name="1">
             <div>
-              <NuxtLink to="/member/sohoSetting"> 接案資料設定 </NuxtLink>
+              <NuxtLink to="/member/soho"> 接案資料設定 </NuxtLink>
               <van-tag v-if="isSohoSetting" round type="success">已填寫</van-tag>
               <van-tag v-else round type="danger">未填寫</van-tag>
             </div>
             <div>
-              <NuxtLink to="/member/sohoWork"> 我的作品 </NuxtLink>
+              <NuxtLink to="/member/soho/work"> 我的作品 </NuxtLink>
             </div>
             <div>
-              <NuxtLink to="/member/sohoPreview"> 個人檔案預覽 </NuxtLink>
+              <NuxtLink to="/member/soho/x"> 個人檔案預覽 </NuxtLink>
             </div>
           </van-collapse-item>
         </van-collapse>

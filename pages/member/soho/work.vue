@@ -7,14 +7,14 @@
         <van-space direction="vertical">
           <label>附件上傳 :</label>
           <p>
-            最多可上傳5個附件，每個附件不可超過2MB。(檔案格式為：.doc,.pdf,.ppt,.jpf,.gif,.png,.txt)
+            最多可上傳10個附件，每個附件不可超過2MB。(檔案格式為：.doc,.pdf,.ppt,.jpf,.gif,.png,.txt,.jpg)
           </p>
           <van-uploader
             v-model="fileList"
             :max-size="2 * 1024 * 1024"
             :after-read="afterRead"
             :max-count="10"
-            accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt"
+            accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt,.jpg"
             @oversize="onOversize"
             @delete="onDelete"
           />
@@ -91,11 +91,11 @@ onMounted(async () => {
     res.data.forEach(async (e) => {
       if (
         e.filename.toLowerCase().endsWith('.png') ||
-        e.filename.toLowerCase().endsWith('.jpf') ||
+        e.filename.toLowerCase().endsWith('.jpg') ||
         e.filename.toLowerCase().endsWith('.gif')
       ) {
         fileList.value.push({
-          url: await $downloadShow(e.filename),
+          url: await $downloadShow(`/file/sohoDownload/${e.filename}/work`),
           name: e.filename,
           isImage: true
         })

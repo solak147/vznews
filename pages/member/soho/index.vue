@@ -195,7 +195,7 @@ onMounted(async () => {
   if (resAvatar.code === 0) {
     resAvatar.data.forEach(async (e) => {
       fileList.value.push({
-        url: await $downloadShow(e.filename, 'avatar'),
+        url: await $downloadShow(`/file/sohoDownload/${e.filename}/avatar`),
         name: e.filename,
         isImage: true
       })

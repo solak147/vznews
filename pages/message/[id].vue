@@ -59,7 +59,9 @@
             </div>
             <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', width: '20rem' }" />
             <div class="quoteFooter">
-              <a href="javascript:void(0)">查看接案方資訊</a>
+              <a href="javascript:void(0)" @click="seeSohoInfo(item.accountFrom, id)"
+                >查看接案方資訊</a
+              >
 
               <!-- 案主才顯示 -->
               <van-button
@@ -229,6 +231,14 @@ const clickDeal = async (msg, id) => {
     }, 100)
 
     showNotify({ type: 'success', message: '案件成交' })
+  }
+}
+
+const seeSohoInfo = (from, id) => {
+  if (from === id) {
+    navigateTo(`/member/soho/${id}`)
+  } else {
+    navigateTo(`/member/soho/${from}`)
   }
 }
 </script>

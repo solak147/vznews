@@ -138,9 +138,9 @@ export default defineNuxtPlugin(() => {
         })
       },
 
-      downloadShow: async (filename, param = 'work') => {
+      downloadShow: async (url) => {
         let res
-        await useFetch(`/file/sohoDownload/${filename}/${param}`, {
+        await useFetch(url, {
           method: 'get',
           baseURL: '/api',
           onRequest({ options }) {

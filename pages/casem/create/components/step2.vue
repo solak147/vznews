@@ -103,14 +103,14 @@
         <van-space direction="vertical">
           <label>附件上傳 :</label>
           <p>
-            最多可上傳5個附件，每個附件不可超過2MB。(檔案格式為：.doc,.pdf,.ppt,.jpf,.gif,.png,.txt)
+            最多可上傳5個附件，每個附件不可超過2MB。(檔案格式為：.doc,.pdf,.ppt,.jpf,.gif,.png,.txt,.jpg)
           </p>
           <van-uploader
             v-model="fileList"
             :max-size="2 * 1024 * 1024"
             :after-read="afterRead"
             :max-count="5"
-            accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt"
+            accept=".doc,.pdf,.ppt,.jpf,.gif,.png,.txt,.jpg"
             @oversize="onOversize"
           />
         </van-space>

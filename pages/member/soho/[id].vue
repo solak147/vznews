@@ -97,8 +97,8 @@
             :key="item"
             href="javascript:void(0)"
             class="workFile"
-            @click="$download(`/file/sohoDownload/${item.name}/work`, item.name)"
-            >{{ item.name }}</a
+            @click="$download(`/file/sohoDownload/${item}/work?account=${id}`, item)"
+            >{{ item }}</a
           >
         </div>
 
@@ -136,6 +136,9 @@
 const { $request, $download, $downloadShow } = useNuxtApp()
 const { transAddressCode, transExpCode, trnasRoleCode, trnasCaseTypeCode } = useCommon()
 
+const route = useRoute()
+const { id } = route.params
+
 const props = defineProps({
   navActive: {
     type: Function
@@ -149,13 +152,13 @@ onMounted(async () => {
   const resAvatar = await $request('/file/sohowork/avatar', 'get')
   if (resAvatar.code === 0) {
     resAvatar.data.forEach(async (e) => {
-      avatarUrl.value = await $downloadShow(e.filename, 'avatar')
+      avatarUrl.value = await $downloadShow(`/file/sohoDownload/${e.filename}/avatar`)
     })
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
 
-  const res = await $request('/member/sohoSettingInit', 'get')
+  const res = await $request(`/member/sohoSettingInit?account=${id}`, 'get')
   if (res.code === 0) {
     if ('password' in res.data) {
       name.value = res.data.name
@@ -186,24 +189,26 @@ onMounted(async () => {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
 
-  const resWork = await $request('/file/sohowork/work', 'get')
+  const resWork = await $request(`/file/sohowork/work?account=${id}`, 'get')
   if (resWork.code === 0) {
     resWork.data.forEach(async (e) => {
       if (
         e.filename.toLowerCase().endsWith('.png') ||
-        e.filename.toLowerCase().endsWith('.jpf') ||
+        e.filename.toLowerCase().endsWith('.jpg') ||
         e.filename.toLowerCase().endsWith('.gif')
       ) {
-        workPicList.images.push(await $downloadShow(e.filename))
+        workPicList.images.push(
+          await $downloadShow(`/file/sohoDownload/${e.filename}/work?account=${id}`)
+        )
       } else {
-        workFileList.value.push({ url: await $downloadShow(e.filename), name: e.filename })
+        workFileList.value.push(e.filename)
       }
     })
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
 
-  const resUrl = await $request('/member/sohoUrl', 'get')
+  const resUrl = await $request(`/member/sohoUrl?account=${id}`, 'get')
   if (resUrl.code === 0) {
     let index = 0
     resUrl.data.forEach((e) => {
@@ -213,6 +218,14 @@ onMounted(async () => {
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   }
+})
+
+onUnmounted(() => {
+  workPicList.images.forEach((e) => {
+    if (e) {
+      URL.revokeObjectURL(e)
+    }
+  })
 })
 
 // 暱稱
