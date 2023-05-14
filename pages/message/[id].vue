@@ -79,12 +79,15 @@
         <van-cell v-else-if="item.accountFrom === id">
           <van-space class="msg-left">
             <van-image
+              v-if="avatar"
               round
               width="4rem"
               height="4rem"
-              src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+              :src="avatar"
               class="img-left"
             />
+            <van-icon v-else name="user-circle-o" class="img-left" size="4rem" />
+
             <div class="b-f">{{ item.message }}</div>
           </van-space>
         </van-cell>
@@ -115,10 +118,11 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 const msgStore = useMsgStore()
-const { $request } = useNuxtApp()
-const { calTimeDiffGrp, dateFormat } = useCommon()
 const route = useRoute()
+const { $request, $downloadShow } = useNuxtApp()
+const { calTimeDiffGrp, dateFormat } = useCommon()
 const { id } = route.params
+const avatar = ref('') // 對方頭像
 let listEle // 用來控制 scroll
 
 const props = defineProps({
@@ -141,12 +145,29 @@ watch(props.sendMsgObj, () => {
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
+  const resAvatar = await $request(`/file/sohowork/avatar?account=${id}`, 'get')
+  if (resAvatar.code === 0) {
+    if (resAvatar.data.length > 0) {
+      avatar.value = await $downloadShow(
+        `/file/sohoDownload/${resAvatar.data[0].filename}/avatar?account=${id}`
+      )
+    }
+  } else {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  }
+
   listEle = document.getElementById('list')
 
   setTimeout(() => {
     listEle.scrollTop = listEle.scrollHeight
   }, 100)
+})
+
+onUnmounted(() => {
+  if (avatar.value) {
+    URL.revokeObjectURL(avatar.value)
+  }
 })
 
 const list = reactive({ data: [] })
