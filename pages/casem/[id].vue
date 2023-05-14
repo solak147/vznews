@@ -196,7 +196,7 @@ onMounted(async () => {
 
 // 報價
 const quoteCase = ref(null)
-const clickQuote = () => {
+const clickQuote = async () => {
   if (!isVip.value) {
     showDialog({
       message: '請先購買vip才能使用此功能',
@@ -211,6 +211,19 @@ const clickQuote = () => {
     showDialog({
       message: '無法報價自己發布的案件',
       theme: 'round-button'
+    })
+    return false
+  }
+
+  const res = await $request('/member/chkSohoSetting', 'get')
+  if (res.code === -1) {
+    showDialog({
+      message: res.msg,
+      theme: 'round-button'
+    }).then(() => {
+      if (res.msg === '尚未填寫接案設定') {
+        navigateTo('/member/sohoSetting')
+      }
     })
     return false
   }

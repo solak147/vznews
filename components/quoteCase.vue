@@ -48,18 +48,23 @@
 </template>
 
 <script setup>
+import { useMsgStore } from '@/stores/message'
+
 const { $request } = useNuxtApp()
+const msgStore = useMsgStore()
 const isComfirmBtn = ref(false)
 const isQuote = ref(false)
 const title = ref('')
 const caseId = ref('')
 const account = ref('') // 案主
+const name = ref('') // 案主暱稱
 
 const showQuote = (casem) => {
   isQuote.value = true
   title.value = casem.data.title
   caseId.value = casem.data.caseId
   account.value = casem.data.account
+  name.value = casem.data.name
 }
 
 const pricePtn = /^\d+$/
@@ -90,6 +95,7 @@ const confirm = async () => {
 
   if (res.code === 0) {
     showNotify({ type: 'success', message: '報價成功' })
+    msgStore.msgTo = name.value
     navigateTo(`/message/${account.value}`)
   } else {
     showDialog({

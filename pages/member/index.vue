@@ -15,6 +15,8 @@
           <van-collapse-item title="接案設定" name="1">
             <div>
               <NuxtLink to="/member/sohoSetting"> 接案資料設定 </NuxtLink>
+              <van-tag v-if="isSohoSetting" round type="success">已填寫</van-tag>
+              <van-tag v-else round type="danger">未填寫</van-tag>
             </div>
             <div>
               <NuxtLink to="/member/sohoWork"> 我的作品 </NuxtLink>
@@ -76,6 +78,8 @@
 </template>
 
 <script setup>
+const { $request } = useNuxtApp()
+
 const activeRole = ref(0)
 const setSoho = ref(['1'])
 const priceRecord = ref([''])
@@ -84,6 +88,18 @@ const bonus = ref([''])
 const notify = ref([''])
 const acticeAccount = ref(['1'])
 const token = useCookie('jwt-token')
+const isSohoSetting = ref(false)
+
+onMounted(async () => {
+  const res = await $request('/member/chkSohoSetting', 'get')
+  if (res.code === -1) {
+    if (res.msg !== '尚未填寫接案設定') {
+      showNotify({ type: 'warning', message: res.msg })
+    }
+  } else {
+    isSohoSetting.value = true
+  }
+})
 
 const logout = () => {
   token.value = null
