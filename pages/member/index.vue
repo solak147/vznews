@@ -30,7 +30,7 @@
         <van-collapse v-model="priceRecord">
           <van-collapse-item title="報價紀錄" name="1">
             <div>
-              <NuxtLink> 報價紀錄 </NuxtLink>
+              <NuxtLink to="/member/soho/quoteRecord"> 報價紀錄 </NuxtLink>
             </div>
           </van-collapse-item>
         </van-collapse>

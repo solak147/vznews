@@ -86,7 +86,7 @@
               :src="avatar"
               class="img-left"
             />
-            <van-icon v-else name="user-circle-o" class="img-left" size="4rem" />
+            <img v-else src="@/assets/images/avatar.png" style="width: 4rem; height: 4rem" />
 
             <div class="b-f">{{ item.message }}</div>
           </van-space>

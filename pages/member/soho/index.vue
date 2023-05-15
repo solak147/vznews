@@ -267,7 +267,13 @@ const afterRead = async (file) => {
 
 // 檔案刪除
 const onDelete = async (file) => {
-  await $request(`/file/sohowork/${file.name}/avatar`, 'delete')
+  let name
+  if (file.name) {
+    name = file.name
+  } else {
+    name = file.file.name
+  }
+  await $request(`/file/sohowork/${name}/avatar`, 'delete')
 }
 
 // 開放設定

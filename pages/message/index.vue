@@ -11,12 +11,8 @@
       <van-swipe-cell v-for="item in list.data" :key="item">
         <van-cell @click="clickDetail(item.account, item.name)">
           <template #icon>
-            <van-image
-              round
-              width="4rem"
-              height="4rem"
-              src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-            />
+            <van-image v-if="item.avatar" round width="4rem" height="4rem" :src="item.avatar" />
+            <img v-else src="@/assets/images/avatar.png" style="width: 4rem; height: 4rem" />
           </template>
           <template #title>
             <label>{{ item.name }}</label>
@@ -51,17 +47,20 @@
 import { useMsgStore } from '@/stores/message'
 const msgStore = useMsgStore()
 const { calTimeDiff } = useCommon()
-const { $request } = useNuxtApp()
+const { $request, $downloadShow } = useNuxtApp()
 
 const props = defineProps({
   navActive: {
-    type: Function
+    type: Function,
+    default: null
   },
   sendMsgObj: {
-    type: Object
+    type: Object,
+    default: null
   },
   refreshBadge: {
-    type: Function
+    type: Function,
+    default: null
   }
 })
 
@@ -80,6 +79,14 @@ onMounted(() => {
   props.navActive(4)
 })
 
+onUnmounted(() => {
+  list.data.forEach((e) => {
+    if (e.avatar) {
+      URL.revokeObjectURL(e.avatar)
+    }
+  })
+})
+
 const list = reactive({
   data: []
 })
@@ -92,6 +99,20 @@ const onLoad = async () => {
   loading.value = true
   const res = await $request('/message', 'get')
   if (res.code === 0) {
+    for (let i = 0; i < res.data.length; i++) {
+      const resAvatar = await $request(
+        `/file/sohowork/avatar?account=${res.data[i].account}`,
+        'get'
+      )
+      if (resAvatar.code === 0) {
+        if (resAvatar.data.length > 0) {
+          res.data[i].avatar = await $downloadShow(
+            `/file/sohoDownload/${resAvatar.data[0].filename}/avatar?account=${res.data[i].account}`
+          )
+        }
+      }
+    }
+
     list.data = res.data
   } else {
     showNotify({ type: 'warning', message: '資料獲取失敗' })

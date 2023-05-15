@@ -192,8 +192,8 @@ const onLoad = async () => {
   } else {
     res.data.forEach((e) => {
       list.value.push(e)
+      from.value += 1
     })
-    from.value += 10
   }
   loading.value = false
 
