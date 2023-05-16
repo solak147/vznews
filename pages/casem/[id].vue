@@ -132,7 +132,9 @@
 
       <van-row justify="center">
         <van-col span="24" style="text-align: center">
-          <van-button type="danger" @click="clickQuote">立即報價</van-button>
+          <van-button v-if="casem.data.status === '0'" type="danger" @click="clickQuote"
+            >立即報價</van-button
+          >
         </van-col>
       </van-row>
     </div>
