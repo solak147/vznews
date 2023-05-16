@@ -58,7 +58,11 @@
             }}
             <span class="price">${{ item._source.expect_money }}</span>
           </div>
-          <div style="float: right"><van-icon name="fire" color="#FFDC35" />0-5人報價</div>
+          <div style="float: right">
+            <van-icon name="fire" color="#FFDC35" />{{
+              formattedQuoteTotal(item._source.quote_total)
+            }}報價
+          </div>
         </template>
         <template #label>
           <van-text-ellipsis rows="4" :content="item._source.work_content" />
@@ -78,7 +82,7 @@
 <script setup>
 const { $request } = useNuxtApp()
 const appConfig = useAppConfig()
-const { calTimeDiff } = useCommon()
+const { calTimeDiff, formattedQuoteTotal } = useCommon()
 
 const props = defineProps({
   navActive: {
@@ -197,7 +201,7 @@ const onLoad = async () => {
   }
   loading.value = false
 
-  if (list.value.length >= res.cnt) {
+  if (!res.cnt || list.value.length >= res.cnt) {
     finished.value = true
   }
 }

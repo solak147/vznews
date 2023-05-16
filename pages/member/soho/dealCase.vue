@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar title="報價紀錄" />
+    <NavBar title="成交案件" />
 
     <van-list
       v-model:loading="loading"
@@ -8,7 +8,7 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" @click="navigateTo(`/casem/${item.CaseId}`)">
+      <van-cell v-for="item in list" :key="item">
         <template #title>
           <label>{{ item.Title }}</label>
           <div class="subTitle">
@@ -17,18 +17,25 @@
             }}
             <span class="price">${{ item.ExpectMoney }}</span>
           </div>
-          <div style="float: right">
-            <van-icon name="fire" color="#FFDC35" />{{ formattedQuoteTotal(item.QuoteTotal) }}報價
-          </div>
+          <div style="float: right"><van-icon name="fire" color="#FFDC35" />0-5人報價</div>
         </template>
         <template #label>
-          <van-text-ellipsis rows="4" :content="item.WorkContent" />
+          <van-text-ellipsis
+            rows="4"
+            :content="item.WorkContent"
+            @click="navigateTo(`/casem/${item.CaseId}`)"
+          />
 
           <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
 
           <div class="listBottom">
             <span>{{ calTimeDiff(item.UpdatedAt) }}</span>
-            <span class="priceSE">報價 : {{ item.PriceS }} ~ {{ item.PriceE }}</span>
+            <span class="priceSE"
+              >報價 : {{ item.PriceS }} ~ {{ item.PriceE }}
+              <van-button type="primary" @click="navigateTo(`/member/soho/dealFlow${item.CaseId}`)"
+                >案件管理</van-button
+              ></span
+            >
           </div>
         </template>
       </van-cell>
@@ -38,7 +45,7 @@
 
 <script setup>
 const { $request } = useNuxtApp()
-const { calTimeDiff, formattedQuoteTotal } = useCommon()
+const { calTimeDiff } = useCommon()
 
 const props = defineProps({
   navActive: {
@@ -57,7 +64,7 @@ const finished = ref(false)
 
 const onLoad = async () => {
   // 异步更新数据
-  const res = await $request(`/case/quoteRecord/0`, 'get')
+  const res = await $request(`/case/quoteRecord/1`, 'get')
 
   if (res.code === -1) {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
@@ -98,9 +105,15 @@ label {
   }
 
   .priceSE {
+    align-items: center;
+    display: flex;
     font-size: 1.4rem;
     color: black;
     float: right;
+
+    .van-button {
+      margin-left: 1rem;
+    }
   }
 }
 </style>

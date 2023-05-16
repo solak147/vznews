@@ -28,7 +28,10 @@
         </van-collapse>
 
         <van-collapse v-model="priceRecord">
-          <van-collapse-item title="報價紀錄" name="1">
+          <van-collapse-item title="案件管理" name="1">
+            <div>
+              <NuxtLink to="/member/soho/dealCase"> 成交案件 </NuxtLink>
+            </div>
             <div>
               <NuxtLink to="/member/soho/quoteRecord"> 報價紀錄 </NuxtLink>
             </div>

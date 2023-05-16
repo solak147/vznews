@@ -2,6 +2,43 @@ export default function () {
   const appConfig = useAppConfig()
   const { addressConfig, experience, caseType } = appConfig
 
+  const formattedDate = (dateString) => {
+    // 將日期時間字串轉換成 JavaScript 的 Date 物件
+    const dateTime = new Date(dateString)
+
+    // 取得年、月、日、時、分、秒的數值
+    const year = dateTime.getFullYear()
+    const month = dateTime.getMonth() + 1 // 注意月份從 0 開始，因此需要加 1
+    const day = dateTime.getDate()
+    const hours = dateTime.getHours()
+    const minutes = dateTime.getMinutes()
+    const seconds = dateTime.getSeconds()
+
+    // 格式化年、月、日、時、分、秒
+    const formattedDate =
+      year.toString() +
+      '-' +
+      (month < 10 ? '0' : '') +
+      month.toString() +
+      '-' +
+      (day < 10 ? '0' : '') +
+      day.toString()
+    const formattedTime =
+      (hours < 10 ? '0' : '') +
+      hours.toString() +
+      ':' +
+      (minutes < 10 ? '0' : '') +
+      minutes.toString() +
+      ':' +
+      (seconds < 10 ? '0' : '') +
+      seconds.toString()
+
+    // 最終結果
+    const result = formattedDate + ' ' + formattedTime
+
+    return result
+  }
+
   const calTimeDiff = (dateString) => {
     const now = new Date()
     const date = new Date(dateString)
@@ -161,7 +198,38 @@ export default function () {
     return res
   }
 
+  const formattedAmount = (amount) => {
+    if (amount < 10000) {
+      return `$${amount}`
+    } else {
+      const quotient = Math.floor(amount / 10000)
+      const remainder = amount % 10000
+
+      if (remainder === 0) {
+        return `$${quotient}萬`
+      } else {
+        return `$${quotient}.${remainder / 1000}萬`
+      }
+    }
+  }
+
+  const formattedQuoteTotal = (total) => {
+    let res
+    if (total <= 5) {
+      res = '0-5人'
+    } else if (total > 5 && total <= 10) {
+      res = '6-10人'
+    } else if (total > 10 && total <= 30) {
+      res = '11-30人'
+    } else if (total > 30) {
+      res = '30人以上'
+    }
+
+    return res
+  }
+
   return {
+    formattedDate,
     calTimeDiff,
     calTimeDiffGrp,
     transContactTime,
@@ -169,6 +237,8 @@ export default function () {
     transAddressCode,
     transExpCode,
     trnasRoleCode,
-    trnasCaseTypeCode
+    trnasCaseTypeCode,
+    formattedAmount,
+    formattedQuoteTotal
   }
 }

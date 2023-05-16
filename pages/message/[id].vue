@@ -15,7 +15,9 @@
             <div>
               案件預算 :
               <span style="color: red">{{
-                `$${item.message.split('-=')[2]} ~ $${item.message.split('-=')[3]}`
+                `${formattedAmount(item.message.split('-=')[2])} ~ ${formattedAmount(
+                  item.message.split('-=')[3]
+                )}`
               }}</span>
             </div>
 
@@ -51,7 +53,9 @@
             <div>
               報價金額 :
               <span style="color: red">{{
-                `$${item.message.split('-=')[2]} ~ $${item.message.split('-=')[3]}`
+                `${formattedAmount(item.message.split('-=')[2])} ~ ${formattedAmount(
+                  item.message.split('-=')[3]
+                )}`
               }}</span>
             </div>
             <div>
@@ -120,7 +124,7 @@ const userStore = useUserStore()
 const msgStore = useMsgStore()
 const route = useRoute()
 const { $request, $downloadShow } = useNuxtApp()
-const { calTimeDiffGrp, dateFormat } = useCommon()
+const { calTimeDiffGrp, dateFormat, formattedAmount } = useCommon()
 const { id } = route.params
 const avatar = ref('') // 對方頭像
 let listEle // 用來控制 scroll
