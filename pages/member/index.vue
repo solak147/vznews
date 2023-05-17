@@ -28,10 +28,7 @@
         </van-collapse>
 
         <van-collapse v-model="priceRecord">
-          <van-collapse-item title="案件管理" name="1">
-            <div>
-              <NuxtLink to="/member/soho/dealCase"> 成交案件 </NuxtLink>
-            </div>
+          <van-collapse-item title="報價紀錄" name="1">
             <div>
               <NuxtLink to="/member/soho/quoteRecord"> 報價紀錄 </NuxtLink>
             </div>
@@ -53,17 +50,16 @@
             </div>
           </van-collapse-item>
         </van-collapse>
-
-        <van-collapse v-model="notify">
-          <van-collapse-item title="通知管理" name="1">
-            <div>
-              <NuxtLink> 通知管理 </NuxtLink>
-            </div>
-          </van-collapse-item>
-        </van-collapse>
       </van-tab>
     </van-tabs>
 
+    <van-collapse v-model="casem">
+      <van-collapse-item title="案件管理" name="1">
+        <div>
+          <NuxtLink :to="dealCase()"> 成交案件 </NuxtLink>
+        </div>
+      </van-collapse-item>
+    </van-collapse>
     <van-collapse v-model="acticeAccount">
       <van-collapse-item title="帳戶管理" name="1">
         <NuxtLink to="/member/profile">新增/修改帳戶資料</NuxtLink>
@@ -88,7 +84,7 @@ const setSoho = ref(['1'])
 const priceRecord = ref([''])
 const collect = ref([''])
 const bonus = ref([''])
-const notify = ref([''])
+const casem = ref([''])
 const acticeAccount = ref(['1'])
 const token = useCookie('jwt-token')
 const isSohoSetting = ref(false)
@@ -107,6 +103,10 @@ onMounted(async () => {
 const logout = () => {
   token.value = null
   navigateTo('/member/login')
+}
+
+const dealCase = () => {
+  return `/member/dealCase${activeRole.value === 0 ? 'boss' : 'soho'}`
 }
 </script>
 

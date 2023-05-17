@@ -32,7 +32,7 @@
             name="day"
             label="執行天數"
             placeholder="執行天數"
-            :rules="[{ pattern: pricePtn, required: true, message: '請填寫數字' }]"
+            :rules="[{ pattern: dayPtn, required: true, message: '請輸入正確數字' }]"
           />
           <van-field left-icon="warning-o" placeholder="請仔細確認，送出後無法再更改。" readonly />
         </van-cell-group>
@@ -67,7 +67,8 @@ const showQuote = (casem) => {
   name.value = casem.data.name
 }
 
-const pricePtn = /^\d+$/
+const pricePtn = /^\d{1,8}$/
+const dayPtn = /^\d{1,4}$/
 const priceS = ref('')
 const priceE = ref('')
 const day = ref('')

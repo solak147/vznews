@@ -17,7 +17,9 @@
             }}
             <span class="price">${{ item.ExpectMoney }}</span>
           </div>
-          <div style="float: right"><van-icon name="fire" color="#FFDC35" />0-5人報價</div>
+          <div style="float: right">
+            <van-icon name="fire" color="#FFDC35" />{{ formattedQuoteTotal(item.QuoteTotal) }}報價
+          </div>
         </template>
         <template #label>
           <van-text-ellipsis
@@ -31,8 +33,8 @@
           <div class="listBottom">
             <span>{{ calTimeDiff(item.UpdatedAt) }}</span>
             <span class="priceSE"
-              >報價 : {{ item.PriceS }} ~ {{ item.PriceE }}
-              <van-button type="primary" @click="navigateTo(`/member/soho/dealFlow${item.CaseId}`)"
+              >報價 : {{ formattedAmount(item.PriceS) }} ~ {{ formattedAmount(item.PriceE) }}
+              <van-button type="primary" @click="navigateTo(`/member/dealFlow${item.CaseId}`)"
                 >案件管理</van-button
               ></span
             >
@@ -45,7 +47,10 @@
 
 <script setup>
 const { $request } = useNuxtApp()
-const { calTimeDiff } = useCommon()
+const { calTimeDiff, formattedAmount, formattedQuoteTotal } = useCommon()
+
+const route = useRoute()
+const { id } = route.params
 
 const props = defineProps({
   navActive: {
@@ -64,7 +69,7 @@ const finished = ref(false)
 
 const onLoad = async () => {
   // 异步更新数据
-  const res = await $request(`/case/quoteRecord/1`, 'get')
+  const res = await $request(`/case/quoteRecord/1?userType=${id}`, 'get')
 
   if (res.code === -1) {
     showNotify({ type: 'warning', message: '資料獲取失敗' })

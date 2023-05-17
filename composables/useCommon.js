@@ -208,7 +208,7 @@ export default function () {
       if (remainder === 0) {
         return `$${quotient}萬`
       } else {
-        return `$${quotient}.${remainder / 1000}萬`
+        return `$${quotient}萬${remainder}`
       }
     }
   }
