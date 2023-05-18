@@ -3,7 +3,22 @@
     <NavBar title="案件瀏覽" />
 
     <van-row>
-      <van-col class="caseTitle" span="24">{{ casem.data.title }}</van-col>
+      <van-col class="caseTitle" span="19">{{ casem.data.title }}</van-col>
+      <van-col class="caseTag" span="5">
+        <van-space direction="vertical">
+          <van-tag v-if="casem.data.status === '4'" plain round type="success" size="large"
+            >已結案</van-tag
+          >
+          <div @click="likeClk">
+            <div v-show="like === 1">
+              <van-tag round type="danger" size="large">已收藏</van-tag>
+            </div>
+            <div v-show="like !== 1">
+              <van-tag plain round type="danger" size="large">點擊收藏</van-tag>
+            </div>
+          </div>
+        </van-space>
+      </van-col>
     </van-row>
 
     <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
@@ -152,6 +167,21 @@ const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
 
+// 收藏
+const like = ref(0)
+const likeClk = async () => {
+  const res = await $request(`/case/collect`, 'post', {
+    caseId: id,
+    isLike: like.value.toString()
+  })
+
+  if (res.code === -1) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  } else {
+    like.value = like.value === 0 ? 1 : 0
+  }
+}
+
 const isVip = ref(false)
 const files = reactive({ data: [] })
 const casem = reactive({
@@ -193,6 +223,7 @@ onMounted(async () => {
     casem.data = res.data
     files.data = res.files
     isVip.value = res.isVip
+    like.value = res.isCollection ? 1 : 0
   }
 })
 
@@ -248,6 +279,11 @@ img {
   margin-top: 2rem;
   font-size: 2rem;
   font-weight: bold;
+}
+
+.caseTag {
+  margin-top: 2rem;
+  text-align: right;
 }
 
 .van-row {

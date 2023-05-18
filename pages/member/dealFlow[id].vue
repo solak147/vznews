@@ -8,16 +8,16 @@
         <p>{{ stepTime.time1 }}</p>
       </van-step>
       <van-step>
-        <h5>【已結案】</h5>
+        <h5>【已完成】</h5>
         <p>{{ stepTime.time2 }}</p>
 
         <div v-if="userStore.account !== account && active === 1">
           <p>
-            如已完成案件，且交付委託內容，請點選下方結案按鈕 <br />系統將把案件移至【案主評價】。
+            如已完成案件，且交付委託內容，請點選下方完成按鈕 <br />系統將把案件移至【案主評價】。
           </p>
           <div class="stepBtn">
             <div></div>
-            <van-button v-if="active === 1" type="primary" @click="close">結案</van-button>
+            <van-button v-if="active === 1" type="primary" @click="close">完成</van-button>
           </div>
         </div>
         <div v-if="userStore.account === account && active === 1">
@@ -88,7 +88,7 @@
         <p v-else-if="active === 3 && userStore.account === account">接案方評價中，請耐心等待...</p>
       </van-step>
       <van-step>
-        <h5>【已結束】</h5>
+        <h5>【已結案】</h5>
       </van-step>
     </van-steps>
   </section>

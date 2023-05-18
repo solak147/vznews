@@ -1,6 +1,17 @@
+<!-- 案主＆人才 成交案件共用此頁面 -->
 <template>
   <section>
     <NavBar title="成交案件" />
+
+    <van-dropdown-menu>
+      <van-dropdown-item v-model="status" :options="statusOpt" @change="dataChg" />
+    </van-dropdown-menu>
+
+    <van-field label="顯示已結案案件" class="finshCase">
+      <template #input>
+        <van-switch v-model="finishCasechk" @change="dataChg" />
+      </template>
+    </van-field>
 
     <van-list
       v-model:loading="loading"
@@ -18,7 +29,10 @@
             <span class="price">${{ item.ExpectMoney }}</span>
           </div>
           <div style="float: right">
-            <van-icon name="fire" color="#FFDC35" />{{ formattedQuoteTotal(item.QuoteTotal) }}報價
+            <van-tag v-show="item.Status === '4'" plain round type="primary">已結案</van-tag>
+            <div v-show="item.Status !== '4'">
+              <van-icon name="fire" color="#FFDC35" />{{ formattedQuoteTotal(item.QuoteTotal) }}報價
+            </div>
           </div>
         </template>
         <template #label>
@@ -49,6 +63,9 @@
 const { $request } = useNuxtApp()
 const { calTimeDiff, formattedAmount, formattedQuoteTotal } = useCommon()
 
+const appConfig = useAppConfig()
+const { caseStatus } = appConfig
+
 const route = useRoute()
 const { id } = route.params
 
@@ -63,20 +80,45 @@ onMounted(() => {
   props.navActive(3)
 })
 
+// 案件狀態
+const status = ref('')
+const statusOpt = Object.assign([], caseStatus)
+statusOpt.unshift({ text: '案件狀態', value: '' })
+
+const dataChg = async () => {
+  loading.value = true
+
+  const res = await $request(
+    `/case/quoteRecord/1?userType=${id}&status=${status.value}&finish=${finishCasechk.value}`,
+    'get'
+  )
+  if (res.code === -1) {
+    showNotify({ type: 'warning', message: '資料獲取失敗' })
+  } else {
+    list.value = res.data
+  }
+
+  loading.value = false
+}
+
+// 顯示已結束案件開關
+const finishCasechk = ref(false)
+
 const list = ref([])
 const loading = ref(false)
 const finished = ref(false)
 
 const onLoad = async () => {
   // 异步更新数据
-  const res = await $request(`/case/quoteRecord/1?userType=${id}`, 'get')
+  const res = await $request(
+    `/case/quoteRecord/1?userType=${id}&finish=${finishCasechk.value}`,
+    'get'
+  )
 
   if (res.code === -1) {
     showNotify({ type: 'warning', message: '資料獲取失敗' })
   } else {
-    res.data.forEach((e) => {
-      list.value.push(e)
-    })
+    list.value = res.data
   }
   loading.value = false
   finished.value = true
@@ -119,6 +161,19 @@ label {
     .van-button {
       margin-left: 1rem;
     }
+  }
+}
+
+.finshCase {
+  margin-top: 0.5rem;
+
+  :deep(label) {
+    width: 10rem;
+    display: inline-block;
+  }
+
+  .van-switch {
+    margin-left: 2rem;
   }
 }
 </style>

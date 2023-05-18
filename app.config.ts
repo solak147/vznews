@@ -566,6 +566,12 @@ export default defineAppConfig({
     { text: '專業顧問', value: 'j' },
     { text: '資訊工程', value: 'k' }
   ],
+  caseStatus: [
+    { text: '未完成', value: '1' },
+    { text: '案主評價中', value: '2' },
+    { text: '接案評價中', value: '3' },
+    { text: '已結案', value: '4' }
+  ],
   experience: [
     { text: '無接案經驗', value: '0' },
     { text: '0~1年接案經驗', value: '1' },
