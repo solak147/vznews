@@ -38,7 +38,7 @@
         <van-collapse v-model="collect">
           <van-collapse-item title="我的收藏" name="1">
             <div>
-              <NuxtLink> 我的收藏 </NuxtLink>
+              <NuxtLink to="/member/soho/collect"> 我的收藏 </NuxtLink>
             </div>
           </van-collapse-item>
         </van-collapse>

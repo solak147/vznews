@@ -1,5 +1,8 @@
 <template>
-  <van-sticky :style="{ height: `${bgheight}vh` }">
+  <van-sticky
+    :style="{ height: `${bgheight}vh` }"
+    style="background: radial-gradient(#525051, #080506)"
+  >
     <div id="retrobg" :style="{ height: `${bgheight}vh` }">
       <div id="retrobg-sky">
         <div id="retrobg-stars">
@@ -26,7 +29,7 @@
           <div class="retrobg-star" style="left: 98%; top: 70%; transform: scale(3)"></div>
         </div>
         <div id="retrobg-sunWrap">
-          <div id="retrobg-sun"></div>
+          <div id="retrobg-sun" @click="backgroundToggle"></div>
         </div>
         <div id="retrobg-mountains">
           <div id="retrobg-mountains-left" class="retrobg-mountain"></div>
@@ -195,6 +198,19 @@
 <script setup>
 const title = ref('title')
 const isBig = ref(true)
+let timer
+
+onMounted(() => {
+  // 设置计时器
+  timer = setInterval(() => {
+    backgroundToggle()
+  }, 60000) // 5秒后触发
+})
+
+onUnmounted(() => {
+  // 清除计时器
+  clearInterval(timer)
+})
 
 const bgheight = ref(50)
 const handleScroll = (event) => {
@@ -207,6 +223,10 @@ const handleScroll = (event) => {
     isBig.value = false
     title.value = 'title sm'
   }
+}
+
+const backgroundToggle = () => {
+  document.querySelector('#retrobg').classList.toggle('retrobg-shutdown')
 }
 
 defineExpose({
