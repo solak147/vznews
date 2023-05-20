@@ -101,14 +101,14 @@ const next = async (values) => {
     baseURL: '/api'
   })
 
-  if (!response.error.value) {
+  if (!response.error.value && response.data.value.code === 0) {
     userStore.account = email.value
     userStore.password = password.value
     userStore.vaildCode = response.data.value.data
     props.stepClick()
   } else {
     showDialog({
-      message: '帳號已存在',
+      message: response.error.value || response.data.value.msg,
       theme: 'round-button'
     })
     nextDisable.value = false
