@@ -99,7 +99,7 @@ const next = async (values) => {
     baseURL: '/api'
   })
 
-  if (!response.error.value) {
+  if (!res.error.value) {
     token.value = res.data.value.data.token
     showNotify({ type: 'success', message: '註冊成功' })
     navigateTo('/member')

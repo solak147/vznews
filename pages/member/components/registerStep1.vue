@@ -41,7 +41,14 @@
       </van-cell-group>
       <van-row>
         <van-col style="text-align: center" span="24">
-          <van-button :disabled="nextDisable" round type="danger" native-type="submit"
+          <van-button
+            :disabled="nextDisable"
+            round
+            type="danger"
+            native-type="submit"
+            :loading="loading"
+            loading-type="spinner"
+            loading-text="驗證信發送中..."
             >下一步</van-button
           ></van-col
         >
@@ -83,6 +90,7 @@ watch(passwordConfirm, (newVal) => {
 // 條款聲明確認
 const lawChk = ref(false)
 
+const loading = ref(false)
 const nextDisable = ref(false)
 const userStore = useUserStore()
 const next = async (values) => {
@@ -94,6 +102,7 @@ const next = async (values) => {
     return
   }
 
+  loading.value = true
   nextDisable.value = true
   const response = await useFetch('/registerStep1', {
     method: 'post',
@@ -112,6 +121,7 @@ const next = async (values) => {
       theme: 'round-button'
     })
     nextDisable.value = false
+    loading.value = false
   }
 }
 </script>
