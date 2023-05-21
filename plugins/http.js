@@ -35,6 +35,9 @@ export default defineNuxtPlugin(() => {
               })
             }
 
+            if (response._data.statusCode === 500 || response._data.code === -3) {
+              navigateTo('/error')
+            }
             returnData = response._data
           },
           onResponseError({ request, response, error }) {
@@ -77,6 +80,10 @@ export default defineNuxtPlugin(() => {
               })
             }
 
+            if (response._data.statusCode === 500 || response._data.code === -3) {
+              navigateTo('/error')
+            }
+
             returnData = response._data
           }
         })
@@ -115,6 +122,10 @@ export default defineNuxtPlugin(() => {
               }).then(() => {
                 navigateTo('/member/login')
               })
+            }
+
+            if (response._data.statusCode === 500 || response._data.code === -3) {
+              navigateTo('/error')
             }
 
             // const blob = await response._data // 非圖片檔案無法下載 (非 Blob 類型)
@@ -159,6 +170,10 @@ export default defineNuxtPlugin(() => {
               }).then(() => {
                 navigateTo('/member/login')
               })
+            }
+
+            if (response._data.statusCode === 500 || response._data.code === -3) {
+              navigateTo('/error')
             }
 
             const blob = await response._data

@@ -6,6 +6,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     !token.value &&
     to.path !== '/' &&
     to.path !== '/casem' &&
+    to.path !== '/error' &&
     to.path !== '/member/login' &&
     to.path !== '/member/register' &&
     !to.path.match(caseCrtPtn)
