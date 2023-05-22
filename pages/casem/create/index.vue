@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar title="立即發案" :back="back" />
+    <NavBar :title="title" :back="back" />
 
     <van-progress :percentage="percent" stroke-width="40" track-color="#ADADAD" />
 
@@ -22,8 +22,16 @@ const props = defineProps({
   }
 })
 
+const route = useRoute()
+const { type } = route.query
+
+const title = ref('立即發案')
 onMounted(() => {
   props.navActive(1)
+
+  if (type === 'edit') {
+    title.value = '案件編輯'
+  }
 })
 
 const step = ref(0)

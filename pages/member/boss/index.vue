@@ -8,7 +8,7 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" @click="navigateTo(`/casem/${item.CaseId}`)">
+      <van-cell v-for="item in list" :key="item">
         <template #title>
           <label>{{ item.Title }}</label>
           <div class="subTitle">
@@ -22,13 +22,19 @@
           </div>
         </template>
         <template #label>
-          <van-text-ellipsis rows="4" :content="item.WorkContent" />
+          <van-text-ellipsis
+            rows="4"
+            :content="item.WorkContent"
+            @click="navigateTo(`/casem/${item.CaseId}`)"
+          />
 
           <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }" />
 
           <div class="listBottom">
             <span>{{ calTimeDiff(item.UpdatedAt) }}</span>
-            <van-button type="primary">案件編輯</van-button>
+            <van-button type="primary" @click="navigateTo('/casem/create?type=edit')"
+              >案件編輯</van-button
+            >
           </div>
         </template>
       </van-cell>
