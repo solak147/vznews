@@ -131,8 +131,35 @@ const caseStore = useCaseStore()
 
 const props = defineProps({
   stepClick: {
-    type: Function
+    type: Function,
+    default: null
   }
+})
+
+onMounted(() => {
+  expectDateChk.value = caseStore.expectDateChk
+
+  switch (caseStore.expectDateChk) {
+    case '1':
+      expectDate.value = caseStore.expectDate
+      break
+    case '2':
+      expectDay.value = caseStore.expectDate
+      break
+  }
+
+  expectMoney.value = caseStore.expectMoney
+
+  workAreaChk.value = caseStore.workAreaChk
+  switch (caseStore.workAreaChk) {
+    case '0':
+      workArea.value = caseStore.workArea
+      break
+  }
+
+  kindChk.value = caseStore.kind
+  workContent.value = caseStore.workContent
+  fileList.value = caseStore.fileList
 })
 
 // 預計完成日

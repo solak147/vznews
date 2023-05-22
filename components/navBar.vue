@@ -7,9 +7,20 @@
 <script setup>
 const props = defineProps({
   title: {
-    type: String
+    type: String,
+    default: ''
+  },
+  back: {
+    type: Function,
+    default: null
   }
 })
 
-const onClickLeft = () => history.back()
+const onClickLeft = () => {
+  if (props.back) {
+    props.back()
+  } else {
+    history.back()
+  }
+}
 </script>

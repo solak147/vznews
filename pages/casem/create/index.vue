@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar title="立即發案" />
+    <NavBar title="立即發案" :back="back" />
 
     <van-progress :percentage="percent" stroke-width="40" track-color="#ADADAD" />
 
@@ -17,7 +17,8 @@ import step3 from './components/step3.vue'
 
 const props = defineProps({
   navActive: {
-    type: Function
+    type: Function,
+    default: null
   }
 })
 
@@ -31,6 +32,15 @@ const percent = ref(25)
 const stepclick = () => {
   step.value += 1
   percent.value += 25
+}
+
+const back = () => {
+  if (step.value > 0) {
+    step.value -= 1
+    percent.value -= 25
+  } else {
+    history.back()
+  }
 }
 </script>
 

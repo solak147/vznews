@@ -55,6 +55,9 @@
 
     <van-collapse v-model="casem">
       <van-collapse-item title="案件管理" name="1">
+        <div v-show="activeRole === 0">
+          <NuxtLink to="/member/boss"> 已發佈案件 </NuxtLink>
+        </div>
         <div>
           <NuxtLink :to="dealCase()"> 成交案件 </NuxtLink>
         </div>

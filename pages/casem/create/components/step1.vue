@@ -54,8 +54,14 @@ const caseStore = useCaseStore()
 
 const props = defineProps({
   stepClick: {
-    type: Function
+    type: Function,
+    default: null
   }
+})
+
+onMounted(() => {
+  title.value = caseStore.title
+  type.value = caseStore.type
 })
 
 const title = ref('')

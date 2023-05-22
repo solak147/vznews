@@ -17,6 +17,22 @@ export const useCaseStore = defineStore(
     const workContent = ref('')
     const fileList = ref([])
 
+    const reset = () => {
+      // 重置store的状态为初始值
+      title.value = ''
+      type.value = ''
+      expectDate.value = ''
+      expectDateChk.value = ''
+      expectMoney.value = ''
+      workArea.value = ''
+      workAreaChk.value = ''
+      kind.value = ''
+      workContent.value = ''
+      fileList.value = []
+
+      localStorage.removeItem('case')
+    }
+
     return {
       title,
       type,
@@ -27,7 +43,9 @@ export const useCaseStore = defineStore(
       workAreaChk,
       kind,
       workContent,
-      fileList
+      fileList,
+
+      reset
     }
   },
   {

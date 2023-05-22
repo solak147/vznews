@@ -142,6 +142,7 @@ const next = async () => {
       message: '聯絡時段未選擇',
       theme: 'round-button'
     })
+    return
   }
 
   if (!lawChk.value) {
@@ -149,6 +150,7 @@ const next = async () => {
       message: '必須勾選同意服務條款',
       theme: 'round-button'
     })
+    return
   }
 
   const formData = new FormData()
@@ -196,6 +198,7 @@ const next = async () => {
       message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
       theme: 'round-button'
     }).then(() => {
+      caseStore.reset()
       navigateTo('/')
     })
   }
