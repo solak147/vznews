@@ -14,6 +14,10 @@
     </van-notice-bar>
 
     <van-form @submit="next" @failed="onFailed">
+      <van-cell-group v-if="caseId" inset>
+        <van-field v-model="caseId" label="案件編號" readonly="" />
+      </van-cell-group>
+
       <van-cell-group inset>
         <van-field
           v-model="title"
@@ -60,9 +64,12 @@ const props = defineProps({
 })
 
 onMounted(() => {
+  caseId.value = caseStore.caseId
   title.value = caseStore.title
   type.value = caseStore.type
 })
+
+const caseId = ref('')
 
 const title = ref('')
 const titlePtn = /^.{3,20}$/

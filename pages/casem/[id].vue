@@ -147,7 +147,7 @@
 
       <van-row justify="center">
         <van-col span="24" style="text-align: center">
-          <van-button v-if="casem.data.status === '0'" type="danger" @click="clickQuote"
+          <van-button v-if="casem.data.status === '0' && !isQuote" type="danger" @click="clickQuote"
             >立即報價</van-button
           >
         </van-col>
@@ -166,6 +166,7 @@ const userStore = useUserStore()
 const token = useCookie('jwt-token')
 const route = useRoute()
 const { id } = route.params
+const { isQuote } = route.query
 
 // 收藏
 const like = ref(0)

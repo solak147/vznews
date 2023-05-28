@@ -105,17 +105,30 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useCaseStore } from '@/stores/case'
 import { useUserStore } from '@/stores/user'
 const caseStore = useCaseStore()
 const userStore = useUserStore()
 const { $request } = useNuxtApp()
+const { caseId } = storeToRefs(caseStore)
 
 onMounted(async () => {
-  const res = await $request(`/member/profile/${userStore.account}`, 'get')
-  name.value = res.user.name
-  phone.value = res.user.phone
-  email.value = res.user.email
+  if (caseId.value) {
+    name.value = caseStore.name
+    phone.value = caseStore.phone
+    cityTalk.value = caseStore.cityTalk
+    cityTalk2.value = caseStore.cityTalk2
+    extension.value = caseStore.extension
+    timeChk.value = caseStore.contactTime
+    email.value = caseStore.email
+    line.value = caseStore.line
+  } else {
+    const res = await $request(`/member/profile/${userStore.account}`, 'get')
+    name.value = res.user.name
+    phone.value = res.user.phone
+    email.value = res.user.email
+  }
 })
 
 const name = ref('')
@@ -155,7 +168,7 @@ const next = async () => {
 
   const formData = new FormData()
   caseStore.fileList.forEach((e) => {
-    formData.append('filesName', e.file.name)
+    formData.append('filesName', e.name ? e.name : e.file.name)
     formData.append('files[]', e.file)
   })
 
@@ -178,7 +191,14 @@ const next = async () => {
   formData.append('email', email.value)
   formData.append('line', line.value)
 
-  const res = await $request('/case/create', 'post', formData)
+  let url
+  if (caseId.value) {
+    url = `/case/update/${caseId.value}`
+  } else {
+    url = '/case/create'
+  }
+
+  const res = await $request(url, 'post', formData)
 
   // const res = await $request('/case/create', 'post', {
   //   ...caseStore,
@@ -188,14 +208,9 @@ const next = async () => {
   //   filesName
   // })
 
-  if (res.code !== 0) {
+  if (res.code === 0) {
     showDialog({
-      message: res.msg,
-      theme: 'round-button'
-    })
-  } else {
-    showDialog({
-      message: '發案成功，3~5 分鐘後案件將會上架，請難心等待',
+      message: caseId.value ? '修改成功' : '發案成功，3~5 分鐘後案件將會上架，請難心等待',
       theme: 'round-button'
     }).then(() => {
       caseStore.reset()

@@ -35,7 +35,13 @@ export default defineNuxtPlugin(() => {
               })
             }
 
-            if (response._data.statusCode === 500 || response._data.code === -3) {
+            // -1已捕捉錯誤 -2未捕捉錯誤
+            if (
+              response._data.statusCode === 500 ||
+              response._data.code === -1 ||
+              response._data.code === -3
+            ) {
+              console.log(response._data.msg)
               navigateTo('/error')
             }
             returnData = response._data

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar :title="title" :back="back" />
+    <NavBar :title="title" :back="back" :case-id="caseId" />
 
     <van-progress :percentage="percent" stroke-width="40" track-color="#ADADAD" />
 
@@ -14,6 +14,8 @@
 import step1 from './components/step1.vue'
 import step2 from './components/step2.vue'
 import step3 from './components/step3.vue'
+import { useCaseStore } from '@/stores/case'
+const caseStore = useCaseStore()
 
 const props = defineProps({
   navActive: {
@@ -23,14 +25,27 @@ const props = defineProps({
 })
 
 const route = useRoute()
-const { type } = route.query
+const { caseId } = route.query
 
 const title = ref('立即發案')
 onMounted(() => {
   props.navActive(1)
 
-  if (type === 'edit') {
-    title.value = '案件編輯'
+  // 編輯模式
+  if (caseId) {
+    title.value = '發佈中案件'
+  }
+})
+
+onUnmounted(() => {
+  if (caseId) {
+    caseStore.reset()
+
+    caseStore.fileList.forEach((e) => {
+      if (e.url && e.url.startsWith('blob:')) {
+        URL.revokeObjectURL(e.url)
+      }
+    })
   }
 })
 

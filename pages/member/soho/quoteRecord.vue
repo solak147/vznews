@@ -8,7 +8,11 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" @click="navigateTo(`/casem/${item.CaseId}`)">
+      <van-cell
+        v-for="item in list"
+        :key="item"
+        @click="navigateTo(`/casem/${item.CaseId}?isQuote=true`)"
+      >
         <template #title>
           <label>{{ item.Title }}</label>
           <div class="subTitle">
