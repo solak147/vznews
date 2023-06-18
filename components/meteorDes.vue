@@ -5,7 +5,9 @@
     <p id="head3" class="header">流程簡單，輕鬆上手，迅速接案</p>
     <p id="head4" class="header">成為用戶生活中不可或缺的平台</p>
     <p id="head5" class="header">Welcome to Buddha</p>
-    <button @click="navigateTo('/casem')">查看案件</button>
+
+    <van-button icon="graphic" plain @click="navigateTo('/casem')">查看案件</van-button>
+
     <div class="light x1"></div>
     <div class="light x2"></div>
     <div class="light x3"></div>
@@ -100,16 +102,15 @@
 
 button {
   position: absolute;
-  border: 0.1rem solid white;
   background: transparent;
   font-family: 'Roboto', sans-serif;
   color: white;
-  width: 250px;
+  width: 150px;
   height: 50px;
-  font-size: 2em;
+  font-size: 1.5em;
   border-radius: 5px;
   opacity: 0.8;
-  top: 10vh;
+  top: 18vh;
   bottom: 0px;
   left: 0px;
   right: 0px;
@@ -341,9 +342,10 @@ button:focus {
   font-family: 'Roboto', sans-serif;
   font-weight: 200;
   color: white;
-  font-size: 2em;
+  font-size: 2.5em;
   text-align: center;
   line-height: 3rem;
+  width: 30rem;
 }
 
 #head1,

@@ -1,11 +1,34 @@
 <template>
   <div style="overflow: scroll; height: 100vh" @scroll="scroll">
     <section>
-      <MoonBanner ref="moonBanner" />
+      <MoonBanner v-show="tabActive === 0" ref="moonBanner" />
 
-      <MeteorDes />
+      <MeteorDes v-show="tabActive === 1" />
 
-      <Swiper
+      <van-tabs v-model:active="tabActive" swipeable animated shrink line-width="2rem" class="tab">
+        <van-tab v-for="(item, index) in tabTitle" :key="index">
+          <template #title>
+            <van-button class="titleBtn">{{ item }}</van-button>
+          </template>
+          <div>
+            <div class="frame">
+              <img src="@/assets/icon/ico_tag_left.png" />
+              <span>廣告合作</span>
+              <img src="@/assets/icon/ico_tag_right.png" />
+            </div>
+            <ImgCombination :list="bannerArr" :type="1"> </ImgCombination>
+
+            <div class="frame">
+              <img src="@/assets/icon/ico_tag_left.png" />
+              <span>成交紀錄</span>
+              <img src="@/assets/icon/ico_tag_right.png" />
+            </div>
+            <ImgCombination :list="dealPath" :type="3"> </ImgCombination>
+          </div>
+        </van-tab>
+      </van-tabs>
+
+      <!-- <Swiper
         :modules="[SwiperAutoplay, SwiperEffectCreative]"
         :slides-per-view="1"
         :loop="true"
@@ -27,7 +50,7 @@
         <SwiperSlide v-for="slide in bannerArr" :key="slide">
           <van-image height="300px" width="100vw" :src="slide" />
         </SwiperSlide>
-      </Swiper>
+      </Swiper> -->
 
       <van-row justify="center">
         <van-col class="stepTitle" span="24"> <h1>簡單三步驟</h1></van-col>
@@ -69,7 +92,7 @@
         <van-col class="stepTitle" span="24"> <h1>尋找專業人才 幫您解決外包難題</h1></van-col>
       </van-row>
 
-      <van-grid :column-num="2" direction="horizontal" icon-size="4.5rem">
+      <van-grid :column-num="2" direction="horizontal" icon-size="3rem">
         <van-grid-item badge="99+" icon="photo-o" icon-color="#7146ff" text="平面設計">
         </van-grid-item>
         <van-grid-item badge="99+" icon="newspaper-o" icon-color="#7146ff" text="網頁設計">
@@ -108,8 +131,15 @@ const bannerArr = ['images/banner1.jpg', 'images/banner2.jpg', 'images/banner3.j
 
 onMounted(() => {
   props.navActive(0)
+
+  for (let i = 1; i <= 10; i++) {
+    dealPath.value.push(`images/deal/deal${i}.png`)
+  }
 })
 
+const dealPath = ref([])
+const tabTitle = ['接案 & 發案', '作品集']
+const tabActive = ref(0)
 const moonBanner = ref(null)
 const scroll = (event) => {
   moonBanner.value?.handleScroll(event)
@@ -131,8 +161,9 @@ const scroll = (event) => {
 
 .stepIcon {
   &-r {
-    background-color: #ffc7e7;
+    background-color: #ffc7e7aa;
     border-radius: 100px;
+    padding: 0.5rem;
   }
 }
 
@@ -145,5 +176,47 @@ const scroll = (event) => {
 :deep(.van-grid-item__text) {
   font-size: 1.8rem;
   font-weight: bold;
+}
+
+.tab {
+  .titleBtn {
+    background: #e1264a;
+    border-radius: 0.8rem;
+    color: #ff9797;
+  }
+
+  :deep(.van-tab--active) {
+    .titleBtn {
+      color: #fff;
+    }
+  }
+
+  :deep(.van-tabs__nav) {
+    background-color: transparent;
+  }
+
+  :deep(.van-tabs__wrap) {
+    margin-top: 3rem;
+  }
+
+  :deep(.van-tabs__line) {
+    background: #fff;
+  }
+
+  .frame {
+    margin-top: 2rem;
+    margin-left: 1.5rem;
+    margin-bottom: 0.5rem;
+    span {
+      color: #e1264a;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0 1rem;
+    }
+
+    img {
+      width: 2rem;
+    }
+  }
 }
 </style>

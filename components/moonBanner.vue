@@ -1,8 +1,5 @@
 <template>
-  <van-sticky
-    :style="{ height: `${bgheight}vh` }"
-    style="background: radial-gradient(#525051, #080506)"
-  >
+  <van-sticky :style="{ height: `${bgheight}vh` }">
     <div id="retrobg" :style="{ height: `${bgheight}vh` }">
       <div id="retrobg-sky">
         <div id="retrobg-stars">
