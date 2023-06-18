@@ -10,7 +10,16 @@
     <!-- 一行三个列表 竖图 -->
     <van-row v-if="props.type === 2" class="row-3">
       <van-col v-for="(item, index) in list" :key="index" span="8">
-        <EasyImage :url="item" height="240"></EasyImage>
+        <EasyImage :url="item.url" height="200"></EasyImage>
+        <div class="text-wrap">
+          <div class="avatar-wrap">
+            <EasyImage :url="item.avatar" class="avatar"> </EasyImage>
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="tag">
+            {{ item.tag }}
+          </div>
+        </div>
       </van-col>
     </van-row>
 
@@ -27,8 +36,11 @@
         :key="i"
         style="padding-right: 15px; box-sizing: border-box"
       >
-        <EasyImage :url="item" height="200"></EasyImage>
-        <div class="title">123 <span>211</span></div>
+        <EasyImage :url="item.url" height="200"></EasyImage>
+        <div class="text">
+          <span class="title"> {{ item.title }}</span>
+          <span class="price">{{ item.price }}</span>
+        </div>
       </van-swipe-item>
     </van-swipe>
   </div>
@@ -56,17 +68,56 @@ const props = defineProps({
 .row-3 .van-col {
   box-sizing: border-box;
   padding: @padding-base;
+
+  .text-wrap {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+
+    span {
+      margin-left: 0.5rem;
+    }
+
+    .tag {
+      text-align: right;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .avatar-wrap {
+    display: flex;
+    align-items: center;
+    width: 21rem;
+    .avatar {
+      border-radius: 10rem;
+      width: 40px;
+      height: 40px;
+    }
+  }
 }
 
 .my-swipe {
   width: 100%;
 
-  .title {
+  .text {
     margin-top: 0.5rem;
     font-size: 1.5rem;
 
-    span {
+    .title {
+      display: inline-block;
+      overflow: hidden;
+      width: 16rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .price {
       float: right;
+      color: #ee0a24;
+      font-weight: bold;
     }
   }
 }

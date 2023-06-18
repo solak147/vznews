@@ -6,6 +6,7 @@
         v-show="status == 2"
         :src="realUrl"
         alt=""
+        :style="{ objectFit: props.fit }"
         @load="onLoad"
         @error="onError"
       />
@@ -27,7 +28,7 @@ const props = defineProps({
   },
   fit: {
     type: String,
-    default: 'contain'
+    default: 'fit'
   },
   height: {
     type: String || Number,
