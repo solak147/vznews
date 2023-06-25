@@ -158,4 +158,13 @@ img {
     color: #fff;
   }
 }
+
+.van-collapse {
+  margin: 0.2rem;
+  opacity: 0.9;
+
+  :deep(.van-collapse-item__title) {
+    border-radius: 1rem;
+  }
+}
 </style>

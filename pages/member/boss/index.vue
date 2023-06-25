@@ -33,6 +33,7 @@
           <div class="listBottom">
             <span>{{ calTimeDiff(item.UpdatedAt) }}</span>
             <van-button type="primary" @click="onEdit(item.CaseId)">案件編輯</van-button>
+            <van-button type="danger" @click="onClose(item.CaseId)">案件下架</van-button>
           </div>
         </template>
       </van-cell>
@@ -111,6 +112,11 @@ const onEdit = async (caseId) => {
 
   navigateTo(`/casem/create?caseId=${caseId}`)
 }
+
+const onClose = async (caseId) => {
+  await $request(`/case/close/${caseId}`, 'post')
+  onLoad()
+}
 </script>
 
 <style lang="less" scoped>
@@ -141,6 +147,7 @@ label {
 
   button {
     float: right;
+    margin-left: 0.5rem;
   }
 }
 </style>

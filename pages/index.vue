@@ -72,7 +72,7 @@
               <van-col class="stepTitle" span="24"> <h1>尋找專業人才 幫您解決外包難題</h1></van-col>
             </van-row>
 
-            <van-grid :column-num="2" direction="horizontal" icon-size="3rem">
+            <van-grid :column-num="2" direction="horizontal" icon-size="3rem" class="case-grid">
               <van-grid-item badge="99+" icon="photo-o" icon-color="#7146ff" text="平面設計">
               </van-grid-item>
               <van-grid-item badge="99+" icon="newspaper-o" icon-color="#7146ff" text="網頁設計">
@@ -101,6 +101,10 @@
               <van-grid-item badge="99+" icon="setting-o" icon-color="#7146ff" text="資訊工程">
               </van-grid-item>
             </van-grid>
+          </div>
+
+          <div v-show="index === 1">
+            <DropList :list="dealPath"></DropList>
           </div>
         </van-tab>
       </van-tabs>
@@ -249,5 +253,9 @@ const scroll = (event) => {
       width: 2rem;
     }
   }
+}
+
+.case-grid {
+  padding-bottom: 5rem;
 }
 </style>

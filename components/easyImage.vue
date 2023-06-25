@@ -70,6 +70,7 @@ const onError = () => {
 .easy-image {
   position: relative;
   overflow: hidden;
+  border-radius: 0.8rem;
 
   img {
     display: block;
