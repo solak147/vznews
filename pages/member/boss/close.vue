@@ -1,6 +1,6 @@
 <template>
   <section>
-    <NavBar title="已發布案件" />
+    <NavBar title="下架案件" />
 
     <van-list
       v-model:loading="loading"
@@ -32,8 +32,8 @@
 
           <div class="listBottom">
             <span>{{ calTimeDiff(item.UpdatedAt) }}</span>
-            <van-button type="primary" @click="onEdit(item.CaseId)">案件編輯</van-button>
-            <van-button type="danger" @click="onClose(item.CaseId)">案件下架</van-button>
+            <van-button type="primary" @click="onRePublish(item.CaseId)">重新上架</van-button>
+            <van-button type="danger" @click="onDelete(item.CaseId)">案件刪除</van-button>
           </div>
         </template>
       </van-cell>
@@ -42,10 +42,8 @@
 </template>
 
 <script setup>
-import { useCaseStore } from '@/stores/case'
-const { $request, $downloadShow } = useNuxtApp()
+const { $request } = useNuxtApp()
 const { calTimeDiff, formattedQuoteTotal } = useCommon()
-const caseStore = useCaseStore()
 
 const props = defineProps({
   navActive: {
@@ -64,58 +62,21 @@ const finished = ref(false)
 
 const onLoad = async () => {
   // 异步更新数据
-  const res = await $request(`/case/release`, 'get')
+  const res = await $request(`/case/getClose`, 'get')
   list.value = res.data
 
   loading.value = false
   finished.value = true
 }
 
-const onEdit = async (caseId) => {
-  const res = await $request(`/case/getDetailAuthOri/${caseId}`, 'get')
-  caseStore.caseId = res.data.caseId
-  caseStore.title = res.data.title
-  caseStore.type = res.data.type
-  caseStore.expectDate = res.data.expectDate
-  caseStore.expectDateChk = res.data.expectDateChk
-  caseStore.expectMoney = res.data.expectMoney
-  caseStore.workArea = res.data.workArea
-  caseStore.workAreaChk = res.data.workAreaChk
-  caseStore.kind = res.data.kind
-  caseStore.workContent = res.data.workContent
-
-  caseStore.name = res.data.name
-  caseStore.phone = res.data.phone
-  caseStore.cityTalk = res.data.cityTalk
-  caseStore.cityTalk2 = res.data.cityTalk2
-  caseStore.extension = res.data.extension
-  caseStore.contactTime = res.data.contactTime.split(',')
-  caseStore.email = res.data.email
-  caseStore.line = res.data.line
-
-  caseStore.fileList = []
-  res.files.forEach(async (e) => {
-    if (
-      e.filename.toLowerCase().endsWith('.png') ||
-      e.filename.toLowerCase().endsWith('.jpg') ||
-      e.filename.toLowerCase().endsWith('.gif')
-    ) {
-      caseStore.fileList.push({
-        url: await $downloadShow(`/file/download/${e.caseId}/${e.filename}`),
-        name: e.filename,
-        isImage: true
-      })
-    } else {
-      caseStore.fileList.push({ url: e.filename, name: e.filename })
-    }
-  })
-
-  navigateTo(`/casem/create?caseId=${caseId}`)
+const onRePublish = async (caseId) => {
+  await $request(`/case/rePublish/${caseId}`, 'post')
+  showNotify({ type: 'success', message: '案件已重新上架' })
+  onLoad()
 }
 
-const onClose = async (caseId) => {
+const onDelete = async (caseId) => {
   await $request(`/case/close/${caseId}`, 'post')
-  showNotify({ type: 'success', message: '案件已下架' })
   onLoad()
 }
 </script>

@@ -2,7 +2,7 @@
   <section>
     <NavBar title="我的帳戶" />
 
-    <van-tabs v-model:active="activeRole">
+    <van-tabs v-model:active="activeRole" swipeable animated>
       <van-tab>
         <template #title> <van-icon name="description" />發案主 </template>
         <img src="@/assets/images/accountCase.jpg" @click="navigateTo('/casem/create')"
@@ -55,9 +55,14 @@
 
     <van-collapse v-model="casem">
       <van-collapse-item title="案件管理" name="1">
-        <div v-show="activeRole === 0">
-          <NuxtLink to="/member/boss"> 已發佈案件 </NuxtLink>
-        </div>
+        <template v-if="activeRole === 0">
+          <div>
+            <NuxtLink to="/member/boss"> 已發佈案件 </NuxtLink>
+          </div>
+          <div v-show="activeRole === 0">
+            <NuxtLink to="/member/boss/close"> 下架案件 </NuxtLink>
+          </div>
+        </template>
         <div>
           <NuxtLink :to="dealCase()"> 成交案件 </NuxtLink>
         </div>
