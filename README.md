@@ -47,3 +47,6 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
       "source.fixAll.eslint": true
     }
 }
+
+/.vscode
+/vznews
