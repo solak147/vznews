@@ -191,14 +191,11 @@ const onLoad = async () => {
   // 异步更新数据
   const res = await $request(`/case/get?from=${from.value}`, 'get')
 
-  if (res.code === -1) {
-    showNotify({ type: 'warning', message: '資料獲取失敗' })
-  } else {
-    res.data.forEach((e) => {
-      list.value.push(e)
-      from.value += 1
-    })
-  }
+  res.data.forEach((e) => {
+    list.value.push(e)
+    from.value += 1
+  })
+
   loading.value = false
 
   if (!res.cnt || list.value.length >= res.cnt) {

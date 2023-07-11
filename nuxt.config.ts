@@ -1,13 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   nitro: {
-    devProxy: {
-      '/api': {
-         target: 'http://localhost:8080',
-        //target: 'http://35.229.193.76:8080',
-        changeOrigin: true,
-        prependPath: true
-      }
+    // devProxy: {
+    //   '/api': {
+    //     target: 'http://localhost:8080',
+    //     // target: 'http://35.229.193.76:8080',
+    //     changeOrigin: true,
+    //     prependPath: true
+    //   }
+    // },
+    routeRules: {
+      '/api/**': { proxy: 'http://localhost:8080/**' }
     }
   },
 
